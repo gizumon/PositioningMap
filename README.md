@@ -10,6 +10,36 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
+## Initial settings
+
+1. Install Angular CLI
+
+```shell
+$ npm i -g @angular/cli
+```
+
+2. Create an app
+
+```shell
+$ ng new [my-app] --routing --style=scss
+$ cd [my-app]
+```
+
+3. Add service worker
+
+```shell
+$ ng add @angular/pwa
+```
+
+4. Generate App Shell
+
+```shell
+$ ng g app-shell --client-project=[my-app] --universal-project=[my-app]
+```
+
+5. Run `ng run` to build the app
+
+
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.

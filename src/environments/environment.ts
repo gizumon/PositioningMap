@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  db: {
+    uri: 'mongodb://localhost:27017',
+    user: '',
+    pass: ''
+  }
 };
 
 /*

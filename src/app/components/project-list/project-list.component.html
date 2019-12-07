@@ -1,0 +1,128 @@
+<div id="project-list">
+  <mat-tab-group>
+      <mat-tab label="Project list">
+        <div class="card-list">
+          <mat-card class="project-card" *ngFor="let project of app.projects">
+              <mat-card-header>
+                <div mat-card-avatar class="project-header-image"></div>
+                  <mat-card-title>{{ project.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
+              </mat-card-header>
+              <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+              <mat-card-content>
+                <p>{{ project.description }}</p>
+                <mat-accordion [id]="project.id" class="example-headers-align" [multi]="true">
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 1 || step === 0)" (click)="setStep(1, project.id)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Project info
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit
+                        <mat-icon>account_circle</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field>
+                      <input matInput placeholder="project name" [(ngModel)]="project.name">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <textarea matInput placeholder="project description" [(ngModel)]="project.description">{{ project.description }}</textarea>
+                    </mat-form-field>
+                
+                    <!-- <mat-action-row>
+                      <button mat-button color="primary" (click)="setStep(2, project.id)">Next</button>
+                    </mat-action-row> -->
+                  </mat-expansion-panel>
+                
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 2 || step === 0)" (click)="setStep(2, project.id)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Label
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit
+                        <mat-icon>map</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field>
+                      <input matInput placeholder="X-axis" [(ngModel)]="project.label.x">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="Y-axis" [(ngModel)]="project.label.y">
+                    </mat-form-field>
+                    <!-- <mat-form-field>
+                        <p>Z-axis:</p><input matInput placeholder="Z-axis" [(ngModel)]="project.label.z">
+                    </mat-form-field> -->
+
+                   <!-- <mat-action-row>
+                      <button mat-button color="warn" (click)="setStep(1, project.id)">Previous</button>
+                      <button mat-button color="primary" (click)="setStep(3, project.id)">Next</button>
+                    </mat-action-row> -->
+                  </mat-expansion-panel>
+                
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 3 || step === 0)" (click)="setStep(3, project.pd)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Attributes
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit or Add
+                        <mat-icon>date_range</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field *ngFor="let attribute of project.attributes">
+                      <input matInput placeholder="name" [(ngModel)]="attribute.name">
+                    </mat-form-field>
+                    {{ attribute?.configs[0].name }}
+                    <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs"></mat-checkbox>
+                    <!-- <mat-action-row>
+                      <button mat-button color="warn" (click)="setStep(2, project.id)">Previous</button>
+                      <button mat-button color="primary" (click)="setStep(-1, project.id)">End</button>
+                    </mat-action-row> -->
+                  </mat-expansion-panel>
+                
+                </mat-accordion>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="setStep(0, project.id)">Edit</button>
+                <button mat-raised-button color="warn">Delete</button>
+              </mat-card-actions>
+            </mat-card>      
+        </div>
+      </mat-tab>
+      <mat-tab label="Add project">
+        <div class="card-list">
+          <mat-card>
+            <mat-card-title>New project</mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+            <mat-card-content>
+              <div class="card-content">
+                <mat-form-field>
+                  <input matInput placeholder="project name" [(ngModel)]="newProject.name">
+                </mat-form-field>
+                <mat-form-field>
+                  <textarea matInput placeholder="project description" [(ngModel)]="newProject.description">{{ newProject.description }}</textarea>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="X-axis" [(ngModel)]="newProject.label.x">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput placeholder="Y-axis" [(ngModel)]="newProject.label.y">
+                </mat-form-field>
+                <mat-form-field *ngFor="let attribute of newProject.attributes">
+                  <input matInput placeholder="name" [(ngModel)]="attribute.name">
+                </mat-form-field>      
+              </div>
+            </mat-card-content>
+            <img mat-card-image>
+            <mat-card-actions></mat-card-actions>
+            <mat-card-footer></mat-card-footer>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+</div>
+

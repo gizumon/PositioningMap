@@ -1,0 +1,25 @@
+#project-list {
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    flex-flow: wrap;
+    width: 100%;
+  }
+  .project-card {
+    max-width: 350px;
+    // max-height: 500px;
+    margin: 20px;
+    .mat-card-subtitle {
+      width: calc(300px - 72px);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+  .project-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+  .card-content {
+    width: 100%;
+  }
+}

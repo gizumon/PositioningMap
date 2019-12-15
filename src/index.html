@@ -15,4 +15,27 @@
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDv28oICwCJZjr1Z5l1_eswWreIdZSTO-I",
+    authDomain: "posmapp-8a86e.firebaseapp.com",
+    databaseURL: "https://posmapp-8a86e.firebaseio.com",
+    projectId: "posmapp-8a86e",
+    storageBucket: "posmapp-8a86e.appspot.com",
+    messagingSenderId: "223060799011",
+    appId: "1:223060799011:web:367795049525f4d4398b96",
+    measurementId: "G-357D4HRGCJ"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
 </html>

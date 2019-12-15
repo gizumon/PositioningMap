@@ -1,3 +1,7 @@
+.h4 {
+  font-family: 'Londrina Shadow', cursive;
+}
+
 .icon-sm {
   padding: 0 14px;
 } 
@@ -6,3 +10,26 @@
   flex: 1 1 auto;
 }
 
+.row {
+  display: flex;
+  font-size: 0.8rem;
+  font-family: 'Londrina Shadow', cursive;
+  p {
+    margin: 10px;
+  }
+}
+
+.icon-button-label {
+  display: flex;
+  flex-direction: column;
+  button {
+    margin-bottom: -5px;
+  }
+  span {
+    padding: 0;
+    margin: 0;
+    font-size: 0.6rem;
+    line-height: 10px;
+    text-align: center;
+  }
+}

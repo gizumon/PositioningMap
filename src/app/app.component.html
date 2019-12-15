@@ -3,8 +3,33 @@
   <mat-toolbar-row>
     <span class="h4">PosmApp</span>
     <span class="spacer-right"></span>
-    <span>No body</span>
-    <mat-icon class="icon-sm" aria-hidden="false" aria-label="Example delete icon">person</mat-icon>
+    <ng-template [ngIf]="isAnonymous">
+        <div class="row">
+            <p>Guest</p>
+        </div>      
+    </ng-template>
+    <ng-template [ngIf]="!isLogin && isAnonymous">
+        <div class="row">
+            <p>Please login...</p>
+        </div>      
+    </ng-template>
+    <ng-template [ngIf]="isLogin && !isAnonymous">
+      <div class="row">
+        <p>{{ userName }}</p>
+      </div>
+    </ng-template>
+    <div class="icon-button-label">
+      <button (click)="logout()" mat-icon-button aria-label="Example icon-button with a heart icon">
+        <mat-icon color="link" aria-hidden="false" aria-label="" title="Logout">person</mat-icon>
+      </button>
+      <ng-template [ngIf]="!isLogin">
+        <span>LOGIN</span>
+      </ng-template>
+      <ng-template [ngIf]="isLogin || isAnonymous">
+        <span>LOGOUT</span>
+      </ng-template>
+    </div>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>
+<app-footer></app-footer>

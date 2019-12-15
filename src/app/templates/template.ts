@@ -2,7 +2,8 @@
 
 export interface IApp {
     user: IUser,
-    projects: IProject[]
+    projects: IProject[],
+    shared_projects: ISharedProjects[]
 }
 export interface IUser {
     id: String,
@@ -18,9 +19,9 @@ export interface IProject {
     plots: IPlot[]
 }
 export interface ILabel {
-    x: String,
-    y: String,
-    z?: String
+    x: [String, String],
+    y: [String, String],
+    z?: [String, String]
 }
 export interface IAttribute {
     id: String,
@@ -35,6 +36,7 @@ export interface IConfig {
 export interface IPlot {
     id: String,
     name: String,
+    created_user_id: String,
     coordinate: {
         x: Number,
         y: Number,
@@ -45,6 +47,12 @@ export interface IPlot {
 export interface IBelong {
     attribute_id: String,
     isChecked: Boolean
+}
+
+export interface ISharedProjects {
+    shared_user_id: String,
+    project_id: String,
+    authority: 0 | 1 | 2
 }
 
 /**
@@ -64,7 +72,8 @@ export class Template {
                 name: 'NoUser'
             },
             // settings: [this.setting()],
-            projects: [this.project()]
+            projects: [this.project()],
+            shared_projects: [this.shared_projects()]
         };
     };
 
@@ -90,9 +99,9 @@ export class Template {
             name: 'New Project',
             description: 'This is new project. You can write description here.',
             label: {
-                x: 'x-axis',
-                y: 'y-axis',
-                z: 'z-axis'
+                x: ['-x-label', '+x-label'],
+                y: ['-y-label', '+y-label'],
+                z: ['-z-label', '+z-label']
             },
             attributes: [this.attribute()],
             plots: [this.plot()]
@@ -129,7 +138,8 @@ export class Template {
      */
     static plot():IPlot {
         return {
-            id: 'default',
+            id: '',
+            created_user_id: '', 
             name: 'New Plot',
             coordinate: {
                 x: 0,
@@ -151,20 +161,27 @@ export class Template {
         };
     };
 
+    static shared_projects():ISharedProjects {
+        return {
+            shared_user_id: 'guest',
+            project_id: 'shared_sample',
+            authority: 2
+        }
+    }
+
     static sample():IApp {
         return {
             user: {
-                id: 'user',
-                name: 'user'
+                id: 'anonymous',
+                name: 'guest'
             },
             projects: [{
                 id: 'prj1',
                 name: 'dummy',
-                description: 'This is description for dummy', 
+                description: 'This is description for dummy',
                 label: {
-                    x: 'x-axis',
-                    y: 'y-axis',
-                    z: 'z-axis',
+                    x: ['-x-label', '+x-label'],
+                    y: ['-y-label', '+y-label']
                 },
                 attributes: [{
                     id: 'attr1',
@@ -178,24 +195,23 @@ export class Template {
                 plots: [{
                     id: 'plt1',
                     name: 'plot1',
+                    created_user_id: 'guest',
                     coordinate: {
                         x: 1,
-                        y: 1,
-                        z: 0
+                        y: 1
                     },
                     belongs: [{
                         attribute_id: 'attr1',
                         isChecked: false
                     }]
-                }]
+                }],
             }, {
                 id: 'prj2',
                 name: 'dummy2',
                 description: 'This is description for dummy', 
                 label: {
-                    x: 'x-axis',
-                    y: 'y-axis',
-                    z: 'z-axis',
+                    x: ['-x-label', '+x-label'],
+                    y: ['-y-label', '+y-label']
                 },
                 attributes: [{
                     id: 'attr2',
@@ -209,16 +225,21 @@ export class Template {
                 plots: [{
                     id: 'plt1',
                     name: 'plot1',
+                    created_user_id: 'guest',
                     coordinate: {
                         x: 1,
-                        y: 1,
-                        z: 0
+                        y: 1
                     },
                     belongs: [{
                         attribute_id: 'attr2',
                         isChecked: false
                     }]
                 }]
+            }],
+            shared_projects: [{
+                shared_user_id: 'sample',
+                project_id: 'prj1',
+                authority: 0,
             }]
         };
     };

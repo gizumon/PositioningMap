@@ -19,7 +19,6 @@
                       </mat-panel-title>
                       <mat-panel-description>
                         Edit
-                        <mat-icon>account_circle</mat-icon>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                 
@@ -42,7 +41,6 @@
                       </mat-panel-title>
                       <mat-panel-description>
                         Edit
-                        <mat-icon>map</mat-icon>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                 
@@ -69,7 +67,6 @@
                       </mat-panel-title>
                       <mat-panel-description>
                         Edit or Add
-                        <mat-icon>date_range</mat-icon>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                 
@@ -86,9 +83,96 @@
                 
                 </mat-accordion>
               </mat-card-content>
-              <mat-card-actions>
-                <button mat-raised-button color="primary" (click)="setStep(0, project.id)">Edit</button>
-                <button mat-raised-button color="warn">Delete</button>
+              <mat-card-actions class="flex-block">
+                <div class="left-block">
+                  <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
+                </div>
+                <div class="right-block">
+                  <button mat-raised-button color="" class="color-edit" (click)="setStep(0, project.id)">Edit</button>
+                  <button mat-raised-button color="warn">Delete</button>    
+                </div>
+              </mat-card-actions>
+            </mat-card>      
+        </div>
+      </mat-tab>
+      <mat-tab label="Shared project">
+        <div class="card-list">
+          <mat-card class="project-card" *ngFor="let project of sharedProjects">
+              <mat-card-header>
+                <div mat-card-avatar class="project-header-image"></div>
+                  <mat-card-title>{{ project.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
+              </mat-card-header>
+              <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+              <mat-card-content>
+                <p>{{ project.description }}</p>
+                <mat-accordion [id]="project.id" class="example-headers-align" [multi]="true">
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 1 || step === 0)" (click)="setStep(1, project.id)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Project info
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field>
+                      <input matInput placeholder="project name" [(ngModel)]="project.name">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <textarea matInput placeholder="project description" [(ngModel)]="project.description">{{ project.description }}</textarea>
+                    </mat-form-field>
+
+                  </mat-expansion-panel>
+                
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 2 || step === 0)" (click)="setStep(2, project.id)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Label
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field>
+                      <input matInput placeholder="X-axis" [(ngModel)]="project.label.x">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="Y-axis" [(ngModel)]="project.label.y">
+                    </mat-form-field>
+
+                  </mat-expansion-panel>
+                
+                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 3 || step === 0)" (click)="setStep(3, project.pd)">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Attributes
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Edit or Add
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                
+                    <mat-form-field *ngFor="let attribute of project.attributes">
+                      <input matInput placeholder="name" [(ngModel)]="attribute.name">
+                    </mat-form-field>
+                    {{ attribute?.configs[0].name }}
+                    <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs"></mat-checkbox>
+
+                  </mat-expansion-panel>
+                
+                </mat-accordion>
+              </mat-card-content>
+              <mat-card-actions class="flex-block">
+                <div class="left-block">
+                  <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
+                </div>
+                <div class="right-block">
+                  <button mat-raised-button color="" class="color-edit" (click)="setStep(0, project.id)">Edit</button>
+                  <button mat-raised-button color="warn">Delete</button>    
+                </div>
               </mat-card-actions>
             </mat-card>      
         </div>

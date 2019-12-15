@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import * as firebase from 'firebase/app';
+
+import { UserService, IUserCredential } from '../../services/user.service';
+import { LoggerService } from '../../services/logger.service';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +12,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private log: LoggerService,
+    // private afAuth: AngularFireAuth
+  ) { }
 
   ngOnInit() {
+
   }
 
+  successCallback(event) {
+    this.log.info(event,'Login');
+  }
+
+  errorCallback(event) {
+    this.log.error(event, 'Login');
+  }
+  // var ui = new firebaseui.auth.AuthUI(firebase.auth());
 }

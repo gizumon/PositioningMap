@@ -31,6 +31,7 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
+              "node_modules/firebaseui/dist/firebaseui.css"
             ],
             "scripts": []
           },
@@ -99,7 +100,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/firebaseui/dist/firebaseui.css"
             ],
             "scripts": []
           }

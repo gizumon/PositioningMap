@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Template, IApp, IUser, IProject } from '../../templates/template';
-import { MatAccordion } from '@angular/material';
+import { Template, IApp, IUser, IProject, ISharedProjects } from 'src/app/templates/template';
+import { UserService, IUserCredential } from 'src/app/services/user.service';
+import { MapService } from 'src/app/services/map.service';
 
 @Component({
   selector: 'app-project-list',
@@ -9,30 +10,26 @@ import { MatAccordion } from '@angular/material';
 })
 export class ProjectListComponent implements OnInit {
   app: IApp;
+  sharedProjects: IProject[];
   step: number = -1;
   targetId: String = '';
   newProject:IProject = Template.project();
 
-  constructor() { }
+  constructor(
+    private userService: UserService,
+    private mapService: MapService
+  ) {
+    // this.mapService.initialize();
+    // this.userService.initialize();
+  }
 
   ngOnInit() {
-    let user: IUser = this.getUser();
-    this.initialize(user);
+    this.initialize();
   }
 
-  initialize(user: IUser): void {
-    this.app = this.getApp(user);
-  }
-  
-  getUser(): IUser {
-    return {
-      id: 'dummy',
-      name: 'dummy'
-    };
-  }
-
-  getApp(user): IApp {
-    return Template.sample();
+  initialize() {
+    this.app = this.mapService.getApp();
+    this.sharedProjects = this.mapService.getSharedProjects();
   }
 
   setStep(index: number, projectId: String) {
@@ -40,8 +37,10 @@ export class ProjectListComponent implements OnInit {
     this.step = index === 0 && this.step === 0 ? -1 : index;
     this.targetId = projectId || this.targetId;
   }
-    expand(id) {
-    let target: any = document.getElementById('#' + id);
-    target.openAll();
+
+  goto(project: IProject) {
+    
+    // {path: 'map/:id', component: MapComponent }
+    
   }
 }

@@ -1,4 +1,10 @@
 #project-list {
+  .mat-tab-labels {
+    flex: 1 1 auto;
+    .mat-tab-lable {
+      width: 50%;
+    } 
+  }
   .card-list {
     display: flex;
     flex-direction: column;
@@ -22,4 +28,30 @@
   .card-content {
     width: 100%;
   }
+  .flex-block {
+    display: flex;
+    .left-block {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .right-block {
+      margin-left: auto;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+  }
+  .color-edit {
+    background-color: #00A85A;
+    color: #fff;
+  }
 }
+
+.mat-expansion-panel-header-title {
+  width: 3rem;
+}
+// .m-5 {
+//   margin: 5px;
+// }
+// .m-10 {
+//   margin: 10px;
+// }

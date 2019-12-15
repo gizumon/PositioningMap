@@ -1,0 +1,16 @@
+<ng-template [ngIf]="!isPC">
+  <div class="footer-space"></div>
+  <div id="footer">
+    <ul id="projects-footer" class="fotter-btn-block">
+      <li (class)="onClick('list')">
+        <mat-icon>folder</mat-icon>
+      </li>
+      <li (class)="onClick('list')">
+        <mat-icon>folder_shared</mat-icon>
+      </li>
+      <li (class)="onClick('add')">
+        <mat-icon>create_new_folder</mat-icon>
+      </li>
+    </ul>
+  </div>      
+</ng-template>

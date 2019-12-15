@@ -1,8 +1,11 @@
 #project-list {
+  .tab-icon {
+    margin-left: 5px;
+  }
   .mat-tab-labels {
     flex: 1 1 auto;
     .mat-tab-lable {
-      width: 50%;
+      width: 33%;
     } 
   }
   .card-list {

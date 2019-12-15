@@ -15,6 +15,7 @@ export interface IProject {
     description: String,
     image?: String,
     label: ILabel,
+    share?: IShare[];
     attributes: IAttribute[],
     plots: IPlot[]
 }
@@ -22,6 +23,10 @@ export interface ILabel {
     x: [String, String],
     y: [String, String],
     z?: [String, String]
+}
+export interface IShare {
+    user_id: String,
+    autority: 0 | 1 | 2
 }
 export interface IAttribute {
     id: String,
@@ -51,8 +56,7 @@ export interface IBelong {
 
 export interface ISharedProjects {
     shared_user_id: String,
-    project_id: String,
-    authority: 0 | 1 | 2
+    project_id: String
 }
 
 /**
@@ -97,7 +101,9 @@ export class Template {
         return {
             id: 'default',
             name: 'New Project',
+            image: '',
             description: 'This is new project. You can write description here.',
+            share: [],
             label: {
                 x: ['-x-label', '+x-label'],
                 y: ['-y-label', '+y-label'],
@@ -164,8 +170,7 @@ export class Template {
     static shared_projects():ISharedProjects {
         return {
             shared_user_id: 'guest',
-            project_id: 'shared_sample',
-            authority: 2
+            project_id: 'shared_sample'
         }
     }
 
@@ -179,6 +184,10 @@ export class Template {
                 id: 'prj1',
                 name: 'dummy',
                 description: 'This is description for dummy',
+                share: [{
+                    user_id: 'guest',
+                    autority: 2
+                }],
                 label: {
                     x: ['-x-label', '+x-label'],
                     y: ['-y-label', '+y-label']
@@ -209,6 +218,7 @@ export class Template {
                 id: 'prj2',
                 name: 'dummy2',
                 description: 'This is description for dummy', 
+                share: [],
                 label: {
                     x: ['-x-label', '+x-label'],
                     y: ['-y-label', '+y-label']
@@ -238,8 +248,7 @@ export class Template {
             }],
             shared_projects: [{
                 shared_user_id: 'sample',
-                project_id: 'prj1',
-                authority: 0,
+                project_id: 'prj1'
             }]
         };
     };

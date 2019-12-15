@@ -1,6 +1,10 @@
 <div id="project-list">
-  <mat-tab-group>
-      <mat-tab label="Project list">
+  <mat-tab-group [selectedIndex]="selectedTab">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          Projects
+          <mat-icon class="tab-icon">folder</mat-icon>
+        </ng-template>
         <div class="card-list">
           <mat-card class="project-card" *ngFor="let project of app.projects">
               <mat-card-header>
@@ -95,7 +99,11 @@
             </mat-card>      
         </div>
       </mat-tab>
-      <mat-tab label="Shared project">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          Shered
+          <mat-icon class="tab-icon">folder_shared</mat-icon>
+        </ng-template>
         <div class="card-list">
           <mat-card class="project-card" *ngFor="let project of sharedProjects">
               <mat-card-header>
@@ -177,7 +185,11 @@
             </mat-card>      
         </div>
       </mat-tab>
-      <mat-tab label="Add project">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          Add
+          <mat-icon class="tab-icon">create_new_folder</mat-icon>
+        </ng-template>
         <div class="card-list">
           <mat-card>
             <mat-card-title>New project</mat-card-title>

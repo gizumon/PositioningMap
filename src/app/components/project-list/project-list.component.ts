@@ -12,6 +12,7 @@ export class ProjectListComponent implements OnInit {
   app: IApp;
   sharedProjects: IProject[];
   step: number = -1;
+  selectedTab: number = 0;  
   targetId: String = '';
   newProject:IProject = Template.project();
 
@@ -38,8 +39,11 @@ export class ProjectListComponent implements OnInit {
     this.targetId = projectId || this.targetId;
   }
 
+  changeTab(index: number) {
+    this.selectedTab = index;
+  }
+
   goto(project: IProject) {
-    
     // {path: 'map/:id', component: MapComponent }
     
   }

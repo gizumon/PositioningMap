@@ -8,8 +8,8 @@ import { AngularFireAuth } from "@angular/fire/auth";
 import { Template, IUser } from '../templates/template'
 
 export interface IUserCredential {
-  id: String,
-  name: String,
+  id: string,
+  name: string,
   isAnonymous: Boolean
 }
 

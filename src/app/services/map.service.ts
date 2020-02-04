@@ -47,7 +47,7 @@ export class MapService {
 
   setShareProjects(app: IApp) {
     this.app.shared_projects.forEach((shared) => {
-      this.sharedProjects.push(this.getProject(shared.shared_user_id, shared.project_id));
+      this.sharedProjects.push(this.getProject(shared.user_id, shared.project_id));
     });
   }
 
@@ -55,7 +55,7 @@ export class MapService {
     return this.sharedProjects;
   }
 
-  getProject(user_id: String, project_id: String): IProject {
+  getProject(user_id: string, project_id: string): IProject {
     // TODO: user_idとproject_idからプロジェクトを検索
     return Template.sample().projects[0]
   }

@@ -33,7 +33,9 @@
               "src/styles.scss",
               "node_modules/firebaseui/dist/firebaseui.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/pixi.js/dist/pixi.min.js"
+            ]
           },
           "configurations": {
             "production": {

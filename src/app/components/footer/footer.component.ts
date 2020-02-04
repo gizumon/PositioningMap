@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ContainerService } from '../../services/container.service';
 // import { ProjectListComponent } from '../project-list/project-list.component';
 
 // import { ProjectListComponent } from '../project-list/project-list.component';
@@ -17,26 +18,18 @@ export class FooterComponent implements OnInit {
 
   constructor(
     // private projectList: ProjectListComponent
+    private containerService: ContainerService
   ) { }
 
   ngOnInit() {
     // window sizeがスマートフォンサイズ以上か判定
     this.checkWindowSize(window.innerWidth);
-    this.resizeObserve().subscribe(e => {
+    this.containerService.resizeObserve().subscribe(e => {
       this.checkWindowSize(window.innerWidth);
     });
   }
 
-  resizeObserve(): Observable<UIEvent> {
-    return Observable.create(observer => {
-      window.addEventListener('resize', (e) => {
-        console.log(e);
-        observer.next(e);
-      });
-    });
-  }
-
-  checkWindowSize(windowSize: Number) {
+  checkWindowSize(windowSize: number) {
     this.isPC = windowSize > 480;
   }
 

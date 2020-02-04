@@ -11,7 +11,7 @@ import { LoggerService } from './services/logger.service';
 export class AppComponent implements OnInit {
   isLogin: Boolean = false;
   isAnonymous: Boolean = false;
-  userName: String;
+  userName: string;
 
   constructor(
     private userService: UserService,

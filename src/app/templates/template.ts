@@ -1,62 +1,76 @@
 // import * as _ from 'lodash';
 
+/**
+ * Applications table
+ * @PK userId
+ * @FK projectListId, sharedProjectId
+ * @param 
+ */
 export interface IApp {
     user: IUser,
     projects: IProject[],
     shared_projects: ISharedProjects[]
 }
+/**
+ * Users table
+ * @PK id
+ * @FK 
+ * @param name
+ */
 export interface IUser {
-    id: String,
-    name: String
+    id: string,
+    name: string
 }
 export interface IProject {
-    id: String,
-    name: String,
-    description: String,
-    image?: String,
+    id: string,
+    name: string,
+    description?: string,
+    image?: string,
     label: ILabel,
-    share?: IShare[];
+    // share?: IShare[],
     attributes: IAttribute[],
     plots: IPlot[]
 }
 export interface ILabel {
-    x: [String, String],
-    y: [String, String],
-    z?: [String, String]
+    x: [string, string],
+    y: [string, string],
+    z?: [string, string]
 }
-export interface IShare {
-    user_id: String,
-    autority: 0 | 1 | 2
-}
+// export interface IShare {
+//     project_id: string,
+//     user_id: string,
+//     autority: 0 | 1 | 2
+// }
 export interface IAttribute {
-    id: String,
-    name: String,
+    id: string,
+    name: string,
     configs?: IConfig[]
 }
 export interface IConfig {
-    id: String,
-    name: String,
+    id: string,
+    name: string,
     arguments?: any[]
 }
 export interface IPlot {
-    id: String,
-    name: String,
-    created_user_id: String,
+    id: string,
+    name: string,
+    created_user_id: string,
     coordinate: {
-        x: Number,
-        y: Number,
-        z?: Number
+        x: number,
+        y: number,
+        z?: number
     },
     belongs?: IBelong[]
 }
 export interface IBelong {
-    attribute_id: String,
-    isChecked: Boolean
+    attribute_id: string,
+    is_checked: Boolean
 }
 
 export interface ISharedProjects {
-    shared_user_id: String,
-    project_id: String
+    user_id: string,
+    project_id: string,
+    autority: 0 | 1 | 2
 }
 
 /**
@@ -83,13 +97,13 @@ export class Template {
 
     /**
      * User setting information
-     * @return { id, name, isChecked }
+     * @return { id, name, is_checked }
      */
     // setting() {
     //     return {
     //         id: '',
     //         name: '',
-    //         isChecked: false
+    //         is_checked: false
     //     };
     // };
 
@@ -103,7 +117,7 @@ export class Template {
             name: 'New Project',
             image: '',
             description: 'This is new project. You can write description here.',
-            share: [],
+            // share: [],
             label: {
                 x: ['-x-label', '+x-label'],
                 y: ['-y-label', '+y-label'],
@@ -158,19 +172,20 @@ export class Template {
 
     /**
      * Attributes belonged by plot
-     * @return {attribute_id, isChecked}
+     * @return {attribute_id, is_checked}
      */
     static belong():IBelong {
         return {
             attribute_id: 'default',
-            isChecked: false
+            is_checked: false
         };
     };
 
     static shared_projects():ISharedProjects {
         return {
-            shared_user_id: 'guest',
-            project_id: 'shared_sample'
+            user_id: 'guest',
+            project_id: 'shared_sample',
+            autority: 2
         }
     }
 
@@ -182,54 +197,124 @@ export class Template {
             },
             projects: [{
                 id: 'prj1',
-                name: 'dummy',
-                description: 'This is description for dummy',
-                share: [{
-                    user_id: 'guest',
-                    autority: 2
-                }],
+                name: '犬',
+                description: '犬をかわいい、かっこいいマッピングする',
+                image: 'https://material.angular.io/assets/img/examples/shiba2.jpg',
+                // share: [{
+                //     project_id: 'prj1',
+                //     user_id: 'guest',
+                //     autority: 2
+                // }],
                 label: {
-                    x: ['-x-label', '+x-label'],
-                    y: ['-y-label', '+y-label']
+                    x: ['かわいい', 'かっこいい'],
+                    y: ['小さい', '大きい']
                 },
                 attributes: [{
-                    id: 'attr1',
-                    name: 'dummy',
+                    id: 'attr',
+                    name: '色変更',
                     configs: [{
-                        id: 'color',
-                        name: '色変更',
-                        arguments: ['#fff']
+                        id: 'conf1',
+                        name: '赤',
+                        arguments: ['#ff0000']
+                    },{
+                        id: 'conf2',
+                        name: '青',
+                        arguments: ['#0000ff']
                     }]
                 }],
                 plots: [{
                     id: 'plt1',
-                    name: 'plot1',
+                    name: 'チワワ',
                     created_user_id: 'guest',
                     coordinate: {
-                        x: 1,
-                        y: 1
+                        x: -50,
+                        y: -50
                     },
                     belongs: [{
                         attribute_id: 'attr1',
-                        isChecked: false
+                        is_checked: false
+                    }]
+                },{
+                    id: 'plt2',
+                    name: 'ダックスフンド',
+                    created_user_id: 'guest',
+                    coordinate: {
+                        x: 50,
+                        y: -50
+                    },
+                    belongs: [{
+                        attribute_id: 'attr2',
+                        is_checked: false
+                    }]
+                },{
+                    id: 'plt3',
+                    name: 'シェパード',
+                    created_user_id: 'guest',
+                    coordinate: {
+                        x: 50,
+                        y: 50
+                    },
+                    belongs: [{
+                        attribute_id: 'attr1',
+                        is_checked: false
+                    }]
+                },{
+                    id: 'plt4',
+                    name: 'ラブラドール',
+                    created_user_id: 'guest',
+                    coordinate: {
+                        x: -50,
+                        y: 50
+                    },
+                    belongs: [{
+                        attribute_id: 'attr1',
+                        is_checked: false
+                    }]
+                },{
+                    id: 'plt5',
+                    name: 'パピヨン',
+                    created_user_id: 'guest',
+                    coordinate: {
+                        x: 67,
+                        y: -40
+                    },
+                    belongs: [{
+                        attribute_id: 'attr1',
+                        is_checked: false
+                    }]
+                },{
+                    id: 'origin',
+                    name: '柴犬',
+                    created_user_id: 'guest',
+                    coordinate: {
+                        x: 0,
+                        y: 0
+                    },
+                    belongs: [{
+                        attribute_id: 'attr1',
+                        is_checked: false
                     }]
                 }],
             }, {
                 id: 'prj2',
                 name: 'dummy2',
                 description: 'This is description for dummy', 
-                share: [],
+                // share: [],
                 label: {
                     x: ['-x-label', '+x-label'],
                     y: ['-y-label', '+y-label']
                 },
                 attributes: [{
-                    id: 'attr2',
-                    name: 'dummy2',
+                    id: 'attr',
+                    name: '色変更',
                     configs: [{
-                        id: 'color',
-                        name: '色変更',
-                        arguments: ['#fff']
+                        id: 'conf1',
+                        name: '赤',
+                        arguments: ['#ff0000']
+                    },{
+                        id: 'conf2',
+                        name: '青',
+                        arguments: ['#0000ff']
                     }]
                 }],
                 plots: [{
@@ -242,13 +327,14 @@ export class Template {
                     },
                     belongs: [{
                         attribute_id: 'attr2',
-                        isChecked: false
+                        is_checked: false
                     }]
                 }]
             }],
             shared_projects: [{
-                shared_user_id: 'sample',
-                project_id: 'prj1'
+                user_id: 'sample',
+                project_id: 'prj1',
+                autority: 2
             }]
         };
     };

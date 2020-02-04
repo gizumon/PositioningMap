@@ -1,0 +1,24 @@
+.map-card {
+    margin: 30px;
+}
+#pixiContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#plotDetail {
+    position: absolute;
+    max-width: 200px;
+    max-height: 100px;
+    padding: 5px;
+    text-align: center;
+    font-size: 9px;
+    background-color: #ffffffDD;
+    .mat-card-title {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+    .mat-card-content {
+        font-size: 9px;
+    }
+}

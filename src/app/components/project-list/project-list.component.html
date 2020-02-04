@@ -12,7 +12,9 @@
                   <mat-card-title>{{ project.name }}</mat-card-title>
                   <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
               </mat-card-header>
-              <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+              <ng-template [ngIf]="project.image">
+                <img mat-card-image [src]="project.image" alt="Photo of project">
+              </ng-template>
               <mat-card-content>
                 <p>{{ project.description }}</p>
                 <mat-accordion [id]="project.id" class="example-headers-align" [multi]="true">
@@ -49,10 +51,16 @@
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
-                      <input matInput placeholder="X-axis" [(ngModel)]="project.label.x">
+                      <input matInput placeholder="-X" [(ngModel)]="project.label.x[0]">
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="Y-axis" [(ngModel)]="project.label.y">
+                      <input matInput placeholder="+X" [(ngModel)]="project.label.x[1]">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="-Y" [(ngModel)]="project.label.y[0]">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="+Y" [(ngModel)]="project.label.y[1]">
                     </mat-form-field>
                     <!-- <mat-form-field>
                         <p>Z-axis:</p><input matInput placeholder="Z-axis" [(ngModel)]="project.label.z">
@@ -73,12 +81,16 @@
                         Edit or Add
                       </mat-panel-description>
                     </mat-expansion-panel-header>
-                
-                    <mat-form-field *ngFor="let attribute of project.attributes">
-                      <input matInput placeholder="name" [(ngModel)]="attribute.name">
-                    </mat-form-field>
-                    {{ attribute?.configs[0].name }}
-                    <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs"></mat-checkbox>
+
+                    <ng-container *ngFor="let attribute of project.attributes">
+                      <mat-form-field>
+                        <input matInput placeholder="name" [(ngModel)]="attribute.name">
+                      </mat-form-field>
+                      <ng-container *ngFor="let config of attribute?.configs">
+                        <label>{{ config.name }}</label>
+                        <mat-checkbox [(ngModel)]="config.isChecked"></mat-checkbox>
+                      </ng-container>
+                    </ng-container>
                     <!-- <mat-action-row>
                       <button mat-button color="warn" (click)="setStep(2, project.id)">Previous</button>
                       <button mat-button color="primary" (click)="setStep(-1, project.id)">End</button>

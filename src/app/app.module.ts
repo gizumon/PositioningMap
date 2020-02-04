@@ -31,7 +31,8 @@ import {
   MatExpansionModule,
   MatFormFieldModule,
   MatCheckboxModule,
-  MatInputModule
+  MatInputModule,
+  MatSliderModule
  } from '@angular/material';
 import { FormsModule }   from '@angular/forms';
 
@@ -106,7 +107,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     MatExpansionModule,
     MatFormFieldModule,
     MatCheckboxModule,
-    MatInputModule
+    MatInputModule,
+    MatSliderModule
   ],
   providers: [
     // LoggerService,

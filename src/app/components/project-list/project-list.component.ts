@@ -13,7 +13,7 @@ export class ProjectListComponent implements OnInit {
   sharedProjects: IProject[];
   step: number = -1;
   selectedTab: number = 0;  
-  targetId: String = '';
+  targetId: string = '';
   newProject:IProject = Template.project();
 
   constructor(
@@ -33,7 +33,7 @@ export class ProjectListComponent implements OnInit {
     this.sharedProjects = this.mapService.getSharedProjects();
   }
 
-  setStep(index: number, projectId: String) {
+  setStep(index: number, projectId: string) {
     // allopen : 0, allclose: -1  
     this.step = index === 0 && this.step === 0 ? -1 : index;
     this.targetId = projectId || this.targetId;

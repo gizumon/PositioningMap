@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from "@angular/fire/auth";
 
-import { Template, IUser } from '../templates/template'
+import { Template, IUser } from '../templates/template';
+// import { GraphqlClientService } from '../services/graphql-client.service';
 
 export interface IUserCredential {
   id: string,

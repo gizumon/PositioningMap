@@ -1,36 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { Template, IApp, IUser, IProject, ISharedProjects } from 'src/app/templates/template';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+
+import { Template, IApp, IUser, IProject, ISharedProject } from 'src/app/templates/template';
 import { UserService, IUserCredential } from 'src/app/services/user.service';
-import { MapService } from 'src/app/services/map.service';
+// import { MapService } from 'src/app/services/map.service';
+import { GraphqlClientService } from '../../services/graphql-client.service'
 
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss']
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, OnDestroy {
   app: IApp;
   sharedProjects: IProject[];
   step: number = -1;
-  selectedTab: number = 0;  
+  selectedTab: number = 0; 
   targetId: string = '';
   newProject:IProject = Template.project();
 
   constructor(
     private userService: UserService,
-    private mapService: MapService
+    private graphql: GraphqlClientService
   ) {
     // this.mapService.initialize();
     // this.userService.initialize();
   }
 
   ngOnInit() {
-    this.initialize();
+    console.log('run ngOninit in project-list');
+    this.graphql.initSubject.subscribe({
+      complete: () => {
+        console.log('run initialize in project-list');
+        this.initialize();
+        // Subjectを初期化
+        this.graphql.initSubject = new Subject();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.clear();
   }
 
   initialize() {
-    this.app = this.mapService.getApp();
-    this.sharedProjects = this.mapService.getSharedProjects();
+    this.app = this.graphql.getApp();
+    if (this.app.shared_projects) {
+      this.sharedProjects = this.app.shared_projects.map((shared) => {
+        shared.project.authority = shared.authority;
+        return shared.project;
+      });  
+    }
+    console.log('app', this.app);
   }
 
   setStep(index: number, projectId: string) {
@@ -45,6 +66,14 @@ export class ProjectListComponent implements OnInit {
 
   goto(project: IProject) {
     // {path: 'map/:id', component: MapComponent }
-    
+  }
+
+  clear() {
+    this.app = undefined;
+    this.sharedProjects = undefined;
+    this.step = -1;
+    this.selectedTab = 0;  
+    this.targetId = '';
+    this.newProject = Template.project();
   }
 }

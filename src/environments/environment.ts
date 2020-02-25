@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   db: {
-    uri: 'mongodb://localhost:27017',
+    uri: 'https://posmap-api.herokuapp.com/v1/graphql',
     user: '',
     pass: ''
   },

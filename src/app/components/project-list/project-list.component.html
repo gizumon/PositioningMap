@@ -6,7 +6,8 @@
           <mat-icon class="tab-icon">folder</mat-icon>
         </ng-template>
         <div class="card-list">
-          <mat-card class="project-card" *ngFor="let project of app.projects">
+          <ng-template [ngIf]="app">
+            <mat-card class="project-card" *ngFor="let project of app.projects">
               <mat-card-header>
                 <div mat-card-avatar class="project-header-image"></div>
                   <mat-card-title>{{ project.name }}</mat-card-title>
@@ -108,7 +109,8 @@
                   <button mat-raised-button color="warn">Delete</button>    
                 </div>
               </mat-card-actions>
-            </mat-card>      
+            </mat-card>
+          </ng-template>
         </div>
       </mat-tab>
       <mat-tab>
@@ -117,6 +119,7 @@
           <mat-icon class="tab-icon">folder_shared</mat-icon>
         </ng-template>
         <div class="card-list">
+          <ng-template [ngIf]="sharedProjects">
           <mat-card class="project-card" *ngFor="let project of sharedProjects">
               <mat-card-header>
                 <div mat-card-avatar class="project-header-image"></div>
@@ -157,10 +160,16 @@
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
-                      <input matInput placeholder="X-axis" [(ngModel)]="project.label.x">
+                      <input matInput placeholder="-X" [(ngModel)]="project.label.x[0]">
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="Y-axis" [(ngModel)]="project.label.y">
+                      <input matInput placeholder="+X" [(ngModel)]="project.label.x[1]">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="-Y" [(ngModel)]="project.label.y[0]">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="+Y" [(ngModel)]="project.label.y[1]">
                     </mat-form-field>
 
                   </mat-expansion-panel>
@@ -194,7 +203,8 @@
                   <button mat-raised-button color="warn">Delete</button>    
                 </div>
               </mat-card-actions>
-            </mat-card>      
+            </mat-card>
+          </ng-template>  
         </div>
       </mat-tab>
       <mat-tab>
@@ -215,10 +225,16 @@
                   <textarea matInput placeholder="project description" [(ngModel)]="newProject.description">{{ newProject.description }}</textarea>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="X-axis" [(ngModel)]="newProject.label.x">
+                  <input matInput placeholder="-X" [(ngModel)]="newProject.label.x[0]">
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="Y-axis" [(ngModel)]="newProject.label.y">
+                  <input matInput placeholder="+X" [(ngModel)]="newProject.label.x[1]">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput placeholder="-Y" [(ngModel)]="newProject.label.y[0]">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput placeholder="+Y" [(ngModel)]="newProject.label.y[1]">
                 </mat-form-field>
                 <mat-form-field *ngFor="let attribute of newProject.attributes">
                   <input matInput placeholder="name" [(ngModel)]="attribute.name">

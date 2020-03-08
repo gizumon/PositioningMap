@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, AfterViewIn
 import { ActivatedRoute } from '@angular/router';
 import { IProject } from 'src/app/templates/template';
 import { MapService } from 'src/app/services/map.service';
-import { UserService } from 'src/app/services/user.service';
+import { LoginService } from 'src/app/services/login.service';
 
 import * as PIXI from "pixi.js";
 import { ContainerService } from 'src/app/services/container.service';
@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   constructor(
     private route : ActivatedRoute,
     private mapService: MapService,
-    private userService: UserService,
+    private loginService: LoginService,
     private containerService: ContainerService
   ) {
     this.config.pixi.width = this.checkWindowSize(window.innerWidth);
@@ -114,7 +114,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   initialize() {
     const project_id = this.route.snapshot.paramMap.get('id');
-    this.project = this.mapService.getProject(this.userService.getUser().id, project_id);
+    this.project = this.mapService.getProjectById(project_id);
   }
 
   checkWindowSize(val): number {

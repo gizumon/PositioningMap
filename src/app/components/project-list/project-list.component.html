@@ -19,7 +19,7 @@
               <mat-card-content>
                 <p>{{ project.description }}</p>
                 <mat-accordion [id]="project.id" class="example-headers-align" [multi]="true">
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 1 || step === 0)" (click)="setStep(1, project.id)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'project')" (click)="setToggle({target: project.id, open: 'project'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Project info
@@ -41,7 +41,7 @@
                     </mat-action-row> -->
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 2 || step === 0)" (click)="setStep(2, project.id)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'label')" (click)="setToggle({target: project.id, open: 'label'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Label
@@ -73,7 +73,7 @@
                     </mat-action-row> -->
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 3 || step === 0)" (click)="setStep(3, project.pd)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Attributes
@@ -105,8 +105,8 @@
                   <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
                 </div>
                 <div class="right-block">
-                  <button mat-raised-button color="" class="color-edit" (click)="setStep(0, project.id)">Edit</button>
-                  <button mat-raised-button color="warn">Delete</button>    
+                  <button mat-raised-button color="" class="color-edit" (click)="setToggle({target: project.id, open: toggle.open === 'all' ? 'none' : 'all'})">Edit</button>
+                  <button mat-raised-button color="warn">Delete</button>
                 </div>
               </mat-card-actions>
             </mat-card>
@@ -126,11 +126,13 @@
                   <mat-card-title>{{ project.name }}</mat-card-title>
                   <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
               </mat-card-header>
-              <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+              <ng-template [ngIf]="project.image">
+                <img mat-card-image [src]="project.image" alt="Photo of project">
+              </ng-template>
               <mat-card-content>
                 <p>{{ project.description }}</p>
                 <mat-accordion [id]="project.id" class="example-headers-align" [multi]="true">
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 1 || step === 0)" (click)="setStep(1, project.id)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'project')" (click)="setToggle({target: project.id, open: 'project'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Project info
@@ -149,7 +151,7 @@
 
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 2 || step === 0)" (click)="setStep(2, project.id)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'label')" (click)="setToggle({target: project.id, open: 'label'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Label
@@ -174,7 +176,7 @@
 
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="project.id === targetId && (step === 3 || step === 0)" (click)="setStep(3, project.pd)">
+                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Attributes
@@ -199,7 +201,7 @@
                   <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
                 </div>
                 <div class="right-block">
-                  <button mat-raised-button color="" class="color-edit" (click)="setStep(0, project.id)">Edit</button>
+                  <button mat-raised-button color="" class="color-edit" (click)="setToggle({target: project.id, open: toggle.open === 'all' ? 'none' : 'all'})">Edit</button>
                   <button mat-raised-button color="warn">Delete</button>    
                 </div>
               </mat-card-actions>
@@ -238,7 +240,8 @@
                 </mat-form-field>
                 <mat-form-field *ngFor="let attribute of newProject.attributes">
                   <input matInput placeholder="name" [(ngModel)]="attribute.name">
-                </mat-form-field>      
+                </mat-form-field>
+                <button mat-raised-button color="warn" (click)="addProject()">Add</button> 
               </div>
             </mat-card-content>
             <img mat-card-image>

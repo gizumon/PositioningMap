@@ -4,139 +4,53 @@ import { Observable, Subject } from 'rxjs';
 
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
 
-import { UserService } from './user.service';
 import { IUser, IProject, IAttribute, ISharedProject, IApp } from '../templates/template';
 import { LoggerService } from './logger.service';
-import { subscribe, validate } from 'graphql';
 import { ApolloQueryResult } from 'apollo-client';
-
-export interface IInit {
-  isInitialized: boolean
-}
+import { type } from 'os';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GraphqlClientService {
+  public userObservable: Observable<ApolloQueryResult<IUser>>;
+  public projectsObservable: Observable<ApolloQueryResult<IProject[]>>;
+  public attributesObservable: Observable<ApolloQueryResult<IAttribute[]>>;
+  public sharedProjectsObservable: Observable<ApolloQueryResult<ISharedProject[]>>;
 
   constructor(
     private apollo: Apollo,
-    private userService: UserService,
     private log: LoggerService
-  ) {
-    this.userService.userObservable.subscribe(() => {
-      this.initialize();
-    });
-  }
-  
-  public initSubject: Subject<null> = new Subject();
-  private isInitialized = {
-    user: false,
-    projects: false,
-    sharedProjects: false,
-    attributes: false
-  };
-  private userObservable: Observable<ApolloQueryResult<IUser>>;
-  private user: IUser;
-  private projectsObservable: Observable<ApolloQueryResult<IProject[]>>;
-  private projects: IProject[];
-  private attributesObservable: Observable<ApolloQueryResult<IAttribute[]>>;
-  private attributes: IAttribute[];
-  private sharedProjectsObservable: Observable<ApolloQueryResult<ISharedProject[]>>;
-  private sharedProjects: ISharedProject[];
+  ) { }
 
-  public initialize() {
-    console.log('graphql client');
-    // user情報取得後、その他の情報を取得
-    this.initSubject.subscribe({
-      next: () => {
-        console.log('run init subject', this.user);
-        this.setProjects();
-        this.setSharedProjects();
+  /**
+   * 
+   * @param auth_id 
+   * @returns Observable<ApolloQueryResult<IUser>>
+   */
+  public getUser(auth_id) {
+    return this.userObservable = this.apollo.watchQuery<IUser>({
+      query: gql`
+        query getUser($auth_id: String!) {
+          Users(where: {auth_id: {_eq: $auth_id}}) {
+            id
+            auth_id
+            name
+          }
+        }`,
+      variables: {
+        auth_id: auth_id
       }
-    });
-    this.setUser();
-    this.setAttributes();
-  }
-
-  private setUser() {
-    const auth_id = this.userService.user ? this.userService.user.id : 'guest';
-    this.userObservable = this.apollo.watchQuery<IUser>({
-      query: gql`
-        {
-          Users(where: {auth_id: {_eq: "${auth_id}"}}) {
-            id
-            auth_id
-            name
-          }
-        }`
-      }).valueChanges;
-    this.userObservable.subscribe(result => {
-      this.user = result.data['Users'][0];
-      console.log('user', this.user);
-      this.isInitialized.user = true;
-      this.initSubject.next();
-    });
-  }
-
-  private setProjects() {
-    console.log('set projects');
-    const id = this.user ? this.user.id : 'guest';
-    this.projectsObservable = this.apollo.watchQuery<IProject[]>({
-      query: gql`
-      {
-        Projects(where: {created_user_id: {_eq: "${id}"}}) {
-          id
-          name
-          description
-          image
-          label {
-            id
-            x
-            y
-            z
-          }
-          plots {
-            id
-            name
-            coordinate {
-              id
-              x
-              y
-              z
-            }
-            belongs {
-              id
-              attribute_id
-              is_checked
-            }
-            created_user_id
-          }
-          created_user_id
-        }
-      }`
     }).valueChanges;
-    this.projectsObservable.subscribe(result => {
-      this.isInitialized.projects = true;
-      this.projects = result.data['Projects'];
-    });
   }
 
-  private setSharedProjects() {
-    console.log('set shared projects');
-    const id = this.user ? this.user.id : 'guest';
-    this.sharedProjectsObservable = this.apollo.watchQuery<ISharedProject[]>({
+  public getProjects(user_id) {
+    return this.projectsObservable = this.apollo.watchQuery<IProject[]>({
       query: gql`
-      {
-        SharedProjects(where: {user_id: {_eq: "${id}"}}) {
-          id
-          user {
-            id
-            auth_id
-            name
-          }
-          project {
+        query getProjects($created_user_id: uuid!) {
+          Projects(where: {created_user_id: {_eq: $created_user_id}}) {
             id
             name
             description
@@ -165,61 +79,170 @@ export class GraphqlClientService {
             }
             created_user_id
           }
-          authority
-        }
+        }`,
+      variables: {
+        created_user_id: user_id
       }
-      `
     }).valueChanges;
-    this.sharedProjectsObservable.subscribe(result => {
-      this.isInitialized.sharedProjects = true;
-      this.sharedProjects = result.data['SharedProjects'];
-      this.initSubject.complete();
-      // console.log('run set shared project', this.sharedProjects);
-    });
   }
 
-  private setAttributes() {
-    this.attributesObservable = this.apollo.watchQuery<IAttribute[]>({
+  public getSharedProjects(user_id) {
+    return this.sharedProjectsObservable = this.apollo.watchQuery<ISharedProject[]>({
       query: gql`
-      {
-        Attributes {
-          id
-          name
-          arguments
-        }
+        query getSharedProjects($user_id: uuid!) {
+          SharedProjects(where: {user_id: {_eq: $user_id}}) {
+            id
+            user {
+              id
+              auth_id
+              name
+            }
+            project {
+              id
+              name
+              description
+              image
+              label {
+                id
+                x
+                y
+                z
+              }
+              plots {
+                id
+                name
+                coordinate {
+                  id
+                  x
+                  y
+                  z
+                }
+                belongs {
+                  id
+                  attribute_id
+                  is_checked
+                }
+                created_user_id
+              }
+              created_user_id
+            }
+            authority
+          }
+        }`,
+      variables: {
+        user_id: user_id
+      }
+    }).valueChanges;
+  }
+
+  public getAttributes() {
+    return this.attributesObservable = this.apollo.watchQuery<IAttribute[]>({
+      query: gql`
+        query getAttributes {
+          Attributes {
+            id
+            name
+            arguments
+          }
       }`
     }).valueChanges;
-    this.attributesObservable.subscribe(result => {
-      this.isInitialized.attributes = true;
-      this.attributes = result.data['Attributes'];
+  }
+
+  public addUser(user: IUser) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation insert_User($auth_id: String!, $name: String!) {
+          insert_Users(objects: {auth_id: $auth_id, name: $name}) {
+            returning {
+              id
+              auth_id
+              name
+            }
+          }
+        }`,
+      variables: {
+        auth_id: user.auth_id,
+        name: user.name
+      }
     });
   }
 
-  public getUserObservable(): Observable<ApolloQueryResult<IUser>> {
-    return this.userObservable;
+  public upadateUser(user: IUser) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation update_User($id: uuid!, $name: String!) {
+          update_Users(where: {id: {_eq: $id}}, _set: {name: $name})
+            returning {
+              id
+              auth_id
+              name
+            }
+          }
+        }`,
+      variables: {
+        name: user.name
+      }
+    });
   }
 
-  public getProjectsObservable(): Observable<ApolloQueryResult<IProject[]>> {
-    return this.projectsObservable;
+  public addProject(project: IProject) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation insert_Projects($name: String!, $description: String, $image: String,
+                                 $label_Xmin: String!, $label_Xmax: String!, $label_Ymin: String!, $label_Ymax: String!,
+                                 $created_user_id: uuid!) {
+          insert_Projects(objects: {
+                            name: $name, description: $description, image: $image, created_user_id: $created_user_id,
+                            label: { data: { x: "[$label_Xmin, $label_Xmax]", y: "[$label_Ymin, $label_Ymax]" } }
+                          }) {
+            returning {
+              id
+              created_user_id
+              name
+            }
+          }
+        }`,
+      variables: {
+        name: project.name,
+        description: project.description,
+        image: project.image,
+        label_Xmin: project.label.x[0],
+        label_Xmax: project.label.x[1],
+        label_Ymin: project.label.y[0],
+        label_Ymax: project.label.y[1],
+        created_user_id: project.created_user_id
+      }
+    });
   }
-
-  public getSharedProjectsObservable(): Observable<ApolloQueryResult<ISharedProject[]>> {
-    return this.sharedProjectsObservable;
+  public updateProject(project: IProject) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation insert_Projects($name: String!, $description: String, $image: String,
+                                 $label_Xmin: String!, $label_Xmax: String!, $label_Ymin: String!, $label_Ymax: String!,
+                                 $created_user_id: uuid!) {
+          insert_Projects(objects: {
+                            name: $name, description: $description, image: $image, created_user_id: $created_user_id,
+                            label: { data: { x: "[$label_Xmin, $label_Xmax]", y: "[$label_Ymin, $label_Ymax]" } }
+                          }) {
+            returning {
+              id
+              created_user_id
+              name
+            }
+          }
+        }`,
+      variables: {
+        name: project.name,
+        description: project.description,
+        image: project.image,
+        label_Xmin: project.label.x[0],
+        label_Xmax: project.label.x[1],
+        label_Ymin: project.label.y[0],
+        label_Ymax: project.label.y[1],
+        created_user_id: project.created_user_id
+      }
+    });
   }
-
-  public getAttributesObservable(): Observable<ApolloQueryResult<IAttribute[]>> {
-    return this.attributesObservable;
-  }
-
-  public getApp(): IApp {
-    return {
-      user: this.user,
-      projects: this.projects,
-      shared_projects: this.sharedProjects,
-      attributes: this.attributes
-    };
-  }
-
   // public updateUser(data: IUser): boolean {
   //   if (!(data && _.isString(data.id) && _.isString(data.name) && _.isString(data.auth_id))) {
   //     this.log.warn(`Validation Failed: ${data}`);

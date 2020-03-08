@@ -13,6 +13,9 @@ export const environment = {
     twitter: {
       apiKey: 'TWITTER_AUTH_API_KEY',
       secret: 'TWITTER_AUTH_API_SECRET'
+    },
+    anonymous: {
+      auth_id: 'guest'
     }
   },
   firebaseConfig: {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 
-import { UserService, IUserCredential } from '../../services/user.service';
+import { LoginService, IUserCredential } from '../../services/login.service';
 import { LoggerService } from '../../services/logger.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { LoggerService } from '../../services/logger.service';
 export class LoginComponent implements OnInit {
 
   constructor(
-    private userService: UserService,
+    private loginService: LoginService,
     private router: Router,
     private log: LoggerService,
     // private afAuth: AngularFireAuth

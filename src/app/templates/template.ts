@@ -4,9 +4,9 @@
  * Applications
  */
 export interface IApp {
-    user: IUser,
-    projects: IProject[],
-    shared_projects: ISharedProject[],
+    user?: IUser,
+    projects?: IProject[],
+    shared_projects?: ISharedProject[],
     attributes?: IAttribute[]
 }
 /**
@@ -15,7 +15,7 @@ export interface IApp {
 export interface IUser {
     id?: string,
     auth_id?: string,
-    name: string
+    name?: string
 }
 /**
  * Projects table
@@ -27,7 +27,7 @@ export interface IProject {
     description?: string,
     image?: string,
     label: ILabel,
-    plots: IPlot[],
+    plots?: IPlot[],
     created_user_id: string,
     // for shared project
     authority?: 0 | 1 | 2

@@ -32,7 +32,8 @@ import {
   MatFormFieldModule,
   MatCheckboxModule,
   MatInputModule,
-  MatSliderModule
+  MatSliderModule,
+  MatSnackBarModule
  } from '@angular/material';
 import { FormsModule }   from '@angular/forms';
 
@@ -41,10 +42,12 @@ import { MapComponent } from './components/map/map.component';
 import { LoginComponent } from './components/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FooterComponent } from './components/footer/footer.component';
+import { SnackBarComponent } from './components/parts/snack-bar/snack-bar.component';
+import { ModalComponent } from './components/parts/modal/modal.component';
 
 // import { LoggerService } from './services/logger.service';
 // import { MapService } from './services/map.service';
-// import { UserService } from './services/user.service';
+// import { LoginService } from './services/login.service';
 
 const firebaseUiAuthConfig: firebaseui.auth.Config = {
   signInFlow: 'popup',
@@ -82,7 +85,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     ProjectListComponent,
     MapComponent,
     LoginComponent,
-    FooterComponent
+    FooterComponent,
+    SnackBarComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -108,12 +113,13 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     MatFormFieldModule,
     MatCheckboxModule,
     MatInputModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSnackBarModule
   ],
   providers: [
     // LoggerService,
     // MapService,
-    // UserService
+    // LoginService
   ],
   bootstrap: [AppComponent]
 })

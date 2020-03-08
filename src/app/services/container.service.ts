@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+
+export type IFooterCmd = 'project-list' | 'project-shared' | 'project-add';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContainerService {
-  tabIndexObservable: Observable<number>;
-
+  public tabSubject: Subject<IFooterCmd>;
   constructor() {
     
   }
@@ -26,4 +27,7 @@ export class ContainerService {
     });
   }
   
+  changeTab(cmd: IFooterCmd) {
+    this.tabSubject.next(cmd);
+  }
 }

@@ -1,10 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { Template, IApp, IUser, IProject, ISharedProject } from 'src/app/templates/template';
-import { UserService, IUserCredential } from 'src/app/services/user.service';
-// import { MapService } from 'src/app/services/map.service';
-import { GraphqlClientService } from '../../services/graphql-client.service'
+import { GraphqlClientService } from '../../services/graphql-client.service';
+import { MapService } from '../../services/map.service';
+import { ModalService } from '../../services/modal.service';
+import { ValidationService } from '../../services/validation.service';
+import { ContainerService } from '../../services/container.service';
+
+interface IToggleConfig {
+  target: string,
+  open: 'all' | 'project' | 'label' | 'attribute' | 'none' 
+}
 
 @Component({
   selector: 'app-project-list',
@@ -12,68 +19,96 @@ import { GraphqlClientService } from '../../services/graphql-client.service'
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
-  app: IApp;
-  sharedProjects: IProject[];
-  step: number = -1;
-  selectedTab: number = 0; 
-  targetId: string = '';
-  newProject:IProject = Template.project();
+  public app: IApp = {
+    user: {},
+    projects: [],
+    shared_projects: [],
+    attributes: []
+  };
+  public sharedProjects: IProject[];
+  public step: number = -1;
+  public selectedTab: number = 0;
+  public targetId: string = '';
+  public toggle: IToggleConfig = {
+    target: '',
+    open: 'none'
+  }
+  public newProject:IProject = Template.project();
+  public isInitialized: boolean = false;
+  private userSubscription: Subscription;
+  private projectsSubscription: Subscription;
+  private sharedProjectsSubscription: Subscription;
+  private attributesSubscription: Subscription;
 
   constructor(
-    private userService: UserService,
-    private graphql: GraphqlClientService
-  ) {
-    // this.mapService.initialize();
-    // this.userService.initialize();
-  }
+    private mapService: MapService,
+    private modalService: ModalService,
+    private valid: ValidationService,
+    private graphql: GraphqlClientService,
+    private container: ContainerService
+  ) { }
 
   ngOnInit() {
-    console.log('run ngOninit in project-list');
-    this.graphql.initSubject.subscribe({
-      complete: () => {
-        console.log('run initialize in project-list');
-        this.initialize();
-        // Subjectを初期化
-        this.graphql.initSubject = new Subject();
-      }
-    });
+    this.initialize();
   }
 
   ngOnDestroy() {
     this.clear();
   }
 
-  initialize() {
-    this.app = this.graphql.getApp();
-    if (this.app.shared_projects) {
-      this.sharedProjects = this.app.shared_projects.map((shared) => {
+  private initialize() {
+    this.userSubscription = this.mapService.userSubject.subscribe(data => this.app['user'] = data );
+    this.projectsSubscription = this.mapService.projectsSubject.subscribe(data => this.app['projects'] = data);
+    this.attributesSubscription = this.mapService.projectsSubject.subscribe(data => this.app['attributes'] = data);
+    this.sharedProjectsSubscription = this.mapService.sharedProjectsSubject.subscribe(data => {
+      this.app['shared_projects'] = data;
+      this.sharedProjects = data.map((shared) => {
         shared.project.authority = shared.authority;
         return shared.project;
-      });  
-    }
-    console.log('app', this.app);
+      });
+    });
   }
 
-  setStep(index: number, projectId: string) {
-    // allopen : 0, allclose: -1  
-    this.step = index === 0 && this.step === 0 ? -1 : index;
-    this.targetId = projectId || this.targetId;
+  public setToggle(config: IToggleConfig) {
+    this.toggle = config;
   }
 
-  changeTab(index: number) {
+  public changeTab(index: number) {
     this.selectedTab = index;
   }
 
-  goto(project: IProject) {
-    // {path: 'map/:id', component: MapComponent }
+  public addProject() {
+    const {data , isValid} = this.valid.validProject(this.newProject, 'ADD');
+    if(!isValid) {
+      return this.modalService.openSnackBar({
+        message: `Please fill inputs: ${this.newProject.name}`
+      });
+    }
+    this.graphql.addProject(data).subscribe((res) => {
+      console.log('Got data', res);
+      this.modalService.openSnackBar({
+        message: `Success add project: ${data.name}`
+      });
+      // initialize new project data
+      this.newProject = Template.project();
+    },(error) => {
+      console.log('There was an error sending the query', error);
+      this.modalService.openSnackBar({
+        message: `Failed add project: ${this.newProject.name}`
+      });
+    });
   }
 
-  clear() {
+  private clear() {
     this.app = undefined;
     this.sharedProjects = undefined;
     this.step = -1;
     this.selectedTab = 0;  
     this.targetId = '';
     this.newProject = Template.project();
+    this.userSubscription.unsubscribe();
+    this.projectsSubscription.unsubscribe();
+    this.attributesSubscription.unsubscribe();
+    this.sharedProjectsSubscription.unsubscribe();
   }
 }

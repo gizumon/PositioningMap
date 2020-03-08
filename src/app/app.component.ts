@@ -1,7 +1,10 @@
 import { Component, OnChanges, AfterViewChecked, OnInit } from '@angular/core';
-import { UserService, IUserCredential } from './services/user.service';
+import { LoginService, IUserCredential } from './services/login.service';
 import { Router } from '@angular/router';
 import { LoggerService } from './services/logger.service';
+import { MapService } from './services/map.service';
+import { IUser } from './templates/template';
+import { MatSnackBar, MatSnackBarConfig } from "@angular/material";
 
 @Component({
   selector: 'app-root',
@@ -14,31 +17,43 @@ export class AppComponent implements OnInit {
   userName: string;
 
   constructor(
-    private userService: UserService,
+    private loginService: LoginService,
+    private mapService: MapService,
     private router: Router,
-    private log: LoggerService
+    private log: LoggerService,
+    public snackBar: MatSnackBar
   ) {
 
   }
-  title = 'PositioningMap';
+  title = 'PosMap';
 
   ngOnInit() {
-    this.userService.userObservable.subscribe((user) => {
+    this.loginService.userObservable.subscribe((user) => {
       this.log.info(user, 'Login');
       this.isLogin = Boolean(user);
       if(this.isLogin) {
-        this.userName = user.displayName;
         this.isAnonymous = user.isAnonymous;
         this.router.navigateByUrl('/projects');
       } else {
-        this.userName = '';
+        this.setUserName('');
         this.isAnonymous = false;
         this.router.navigateByUrl('/login');
       }
     });
+    this.mapService.userSubject.subscribe({
+      next: (user: IUser) => { this.setUserName(user.name); }
+    })
   }
 
   logout() {
-    this.userService.logout();
+    this.loginService.logout();
+  }
+
+  setUserName(userName) {
+    this.userName = userName
+  }
+
+  public opneSnackBar(message: string, action?: string, config?: MatSnackBarConfig) {
+    this.snackBar.open(message, action, config);
   }
 }

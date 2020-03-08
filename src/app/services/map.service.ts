@@ -1,67 +1,115 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { GraphqlClientService } from './graphql-client.service'
-
-import { Template, IApp, IProject, IUser, ISharedProject } from '../templates/template'
-import { UserService, IUserCredential } from '../services/user.service';
+import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router'
 import _ from 'lodash';
+
+import { GraphqlClientService } from './graphql-client.service'
+import { Template, IApp, IProject, IUser, ISharedProject, IAttribute } from '../templates/template';
+import { LoginService, IUserCredential } from './login.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class MapService {
-  userCredential: IUserCredential;
-  app: IApp;
-  sharedProjects: IProject[] = [];
+  public userSubject: Subject<IUser> = new Subject();
+  public projectsSubject: Subject<IProject[]> = new Subject();
+  public sharedProjectsSubject: Subject<ISharedProject[]> = new Subject();
+  public attributesSubject: Subject<IAttribute[]> = new Subject();
+  private userCredential: IUserCredential;
+  private user: IUser;
+  private projects: IProject[];
+  private attributes: IAttribute[];
+  private sharedProjects: ISharedProject[];
 
   constructor(
     private router: Router,
-    private userService: UserService,
+    private loginService: LoginService,
     private graphql: GraphqlClientService
   ) {
-    this.initialize();
+    this.loginService.userObservable.subscribe(() => {
+      this.initialize(this.loginService.getUser());
+    });
   }
   
-  initialize() {
-    // to be updated
-    this.userCredential = this.userService.getUser();
-    this.setApp();
+  initialize(authUser) {
+    if (!authUser) { return this.clear() }
+    this.userCredential = authUser;
+    const authId = this.userCredential.isAnonymous ? environment.auth.anonymous : this.userCredential.id;
+    // user情報取得後、その他の情報を取得
+    this.userSubject.subscribe((user: IUser) => {
+      console.log('run init subject', this.user);
+      this.setProjects(user.id);
+      this.setSharedProjects(user.id);
+    });
+    this.setUser(authId); // authorization id からUser情報を取得
+    this.setAttributes();
   }
 
-  private setApp() {
-    if(this.userService.isAnonymous()) {
-      this.app = Template.sample();
-    } else {
-      this.app = this.graphql.getApp();
-    }
+  private setUser(authId) {
+    this.graphql.getUser(authId).subscribe(result => {
+      this.user = result.data['Users'][0];
+      this.userSubject.next(this.user);
+    });
   }
 
-  getApp(): IApp {
-    if (!this.app) {
-      return Template.sample();
-    }
-    return this.app;
+  private setAttributes() {
+    this.graphql.getAttributes().subscribe(result => {
+      this.attributes = result.data['Attributes'];
+      this.attributesSubject.next(this.attributes);
+    });
   }
 
-  // getProjects(): IProject[] {
+  private setProjects(user_id) {
+    this.graphql.getProjects(user_id).subscribe(result => {
+      this.projects = result.data['Projects'];
+      this.projectsSubject.next(this.projects);
+    });
+  }
 
-  // }
+  private setSharedProjects(user_id) {
+    this.graphql.getSharedProjects(user_id).subscribe(result => {
+      this.sharedProjects = result.data['SharedProjects'];
+      this.sharedProjectsSubject.next(this.sharedProjects);
+    });
+  }
 
-  // setShareProjects(app: IApp) {
-  //   return this.graqhql.sharedProjects.map(share => {
-      
-  //   });
-  // }
+  public getUser(): IUser { return this.user }
+  public getProjects(): IProject[] { return this.projects }
+  public getSharedProjects(): ISharedProject[] { return this.sharedProjects }
+  public getAttributes(): IAttribute[] { return this.attributes }
+  public getApp(): IApp {
+    return {
+      user: this.getUser(),
+      projects: this.getProjects(),
+      shared_projects: this.getSharedProjects(),
+      attributes: this.getAttributes()
+    };
+  }
 
-  // getSharedProjects(): IProject[] {
-  //   return this.sharedProjects;
-  // }
+  public getProjectById(id: string): IProject {
+    return this.projects.filter((project) => {
+      return project.id = id;
+    })[0];
+  }
 
-  getProject(user_id: string, project_id: string): IProject {
-    // TODO: user_idとproject_idからプロジェクトを検索
-    return Template.sample().projects[0]
+  public getSharedProjectById(id: string): ISharedProject {
+    return this.sharedProjects.filter((shared) => {
+      return shared.id = id;
+    })[0];
+  }
+
+  public clear() {
+    this.userCredential = undefined;
+    this.user = undefined;
+    this.projects = undefined;
+    this.attributes = undefined;
+    this.sharedProjects = undefined;
+    this.userSubject = new Subject();
+    this.projectsSubject = new Subject();
+    this.sharedProjectsSubject = new Subject();
+    this.attributesSubject = new Subject();
   }
 }

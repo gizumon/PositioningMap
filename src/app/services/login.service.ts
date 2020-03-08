@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LoggerService } from '../services/logger.service';
+
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from "@angular/fire/auth";
 
 import { Template, IUser } from '../templates/template';
+import { LoggerService } from './logger.service';
 // import { GraphqlClientService } from '../services/graphql-client.service';
 
 export interface IUserCredential {
@@ -17,7 +18,7 @@ export interface IUserCredential {
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class LoginService {
   userObservable: Observable<firebase.User>;
   user: IUserCredential = {
       id: '',

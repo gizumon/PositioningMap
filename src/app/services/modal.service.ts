@@ -4,16 +4,22 @@ import { Subject } from 'rxjs';
 
 export interface ISnackBarConfig {
   message: string,
-  action?: 'SUCCESS' | 'ERROR' | 'DONE' | 'CLOSE',
+  action?: 'OK' | 'DONE' | 'BACK' | '',
   config?: MatSnackBarConfig,
-  isOpen?: boolean
+  isOpen?: boolean,
+  onDissmissed?: string
 }
 
 export interface IModalConfig {
   message: string,
   action?: 'SUCCESS' | 'ERROR' | 'DONE' | 'CLOSE',
   config?: any,
-  isOpen?: boolean
+  isOpen?: boolean,
+  onDissmissed?: string
+}
+
+export interface IDissmissedAction {
+  onDissmissed?: string
 }
 
 @Injectable({
@@ -22,8 +28,13 @@ export interface IModalConfig {
 export class ModalService {
   public modalSubject: Subject<IModalConfig> = new Subject();
   public snackBarSubject: Subject<ISnackBarConfig> = new Subject();
+  public dissmissedSubjuct: Subject<IDissmissedAction> = new Subject();
 
-  constructor() { }
+  constructor() {
+    this.initialize();
+  }
+
+  private initialize() { }
 
   public openModal(params: IModalConfig) {
     params.isOpen = true;
@@ -49,5 +60,9 @@ export class ModalService {
       isOpen: false
     };
     this.snackBarSubject.next(params);
+  }
+
+  public dissmissed(onDissmissed: IDissmissedAction) {
+    this.dissmissedSubjuct.next(onDissmissed);
   }
 }

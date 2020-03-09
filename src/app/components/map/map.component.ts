@@ -150,7 +150,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   drawAxisLabel() {
     let labelConfigs = [{
       name: 'xMin',
-      label: this.project.label.x[0],
+      label: this.project.label_x_min,
       anchor: {
         x: 0,
         y: 0.5
@@ -161,7 +161,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     },{
       name: 'xMax',
-      label: this.project.label.x[1],
+      label: this.project.label_x_max,
       anchor: {
         x: 1,
         y: 0.5
@@ -172,7 +172,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     },{
       name: 'yMin',
-      label: this.project.label.y[0],
+      label: this.project.label_y_min,
       anchor: {
         x: 0.5,
         y: 1
@@ -183,7 +183,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     },{
       name: 'yMax',
-      label: this.project.label.y[1],
+      label: this.project.label_y_max,
       anchor: {
         x: 0.5,
         y: 0
@@ -240,7 +240,7 @@ export class MapComponent implements OnInit, AfterViewInit {
        .on('pointermove', this.onDragMove)
        .on('pointerup', this.updatePlot.bind(this))
        .on('pointerupoutside', this.updatePlot.bind(this));
-      p.position.set(plot.coordinate.x, plot.coordinate.y);
+      p.position.set(plot.x, plot.y);
       
       // let name = this.project.plots.filter((plot) => {
       //   return p.name === plot.id;

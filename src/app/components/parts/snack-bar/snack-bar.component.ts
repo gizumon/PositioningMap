@@ -17,22 +17,23 @@ export class SnackBarComponent {
   }
   
   private defaultConfig: MatSnackBarConfig = {
-    duration: 2000
+    duration: 5000
   } 
 
   private initialize() {
     this.modalService.snackBarSubject.subscribe((params) => {
-      if (params.isOpen) {
-        this.open(params);
-      } else {
-        this.close();
-      }
+      if (params.isOpen) { return this.open(params); }
+      return this.close();
     })
   }
 
   private open(params: ISnackBarConfig) {
-    console.log(params);
-    this.snackBar.open(params.message, params.action, params.config || this.defaultConfig)
+    const config = params.config || this.defaultConfig;
+    this.snackBar.open(params.message, params.action, config).afterDismissed().subscribe((data) => {
+      if (data.dismissedByAction) {
+        this.modalService.dissmissed({onDissmissed: params.onDissmissed});
+      }
+    });
   }
 
   private close() {

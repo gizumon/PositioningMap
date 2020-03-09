@@ -41,7 +41,7 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 import { MapComponent } from './components/map/map.component';
 import { LoginComponent } from './components/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FooterComponent } from './components/footer/footer.component';
+import { FooterComponent } from './components/parts/footer/footer.component';
 import { SnackBarComponent } from './components/parts/snack-bar/snack-bar.component';
 import { ModalComponent } from './components/parts/modal/modal.component';
 

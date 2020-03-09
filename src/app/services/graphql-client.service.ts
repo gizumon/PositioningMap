@@ -55,21 +55,16 @@ export class GraphqlClientService {
             name
             description
             image
-            label {
-              id
-              x
-              y
-              z
-            }
+            label_x_min
+            label_x_max
+            label_y_min
+            label_y_max
             plots {
               id
               name
-              coordinate {
-                id
-                x
-                y
-                z
-              }
+              x
+              y
+              z
               belongs {
                 id
                 attribute_id
@@ -102,21 +97,16 @@ export class GraphqlClientService {
               name
               description
               image
-              label {
-                id
-                x
-                y
-                z
-              }
+              label_x_min
+              label_x_max
+              label_y_min
+              label_y_max
               plots {
                 id
                 name
-                coordinate {
-                  id
-                  x
-                  y
-                  z
-                }
+                x
+                y
+                z
                 belongs {
                   id
                   attribute_id
@@ -188,13 +178,15 @@ export class GraphqlClientService {
   public addProject(project: IProject) {
     return this.apollo.mutate({
       mutation: gql`
-        mutation insert_Projects($name: String!, $description: String, $image: String,
-                                 $label_Xmin: String!, $label_Xmax: String!, $label_Ymin: String!, $label_Ymax: String!,
-                                 $created_user_id: uuid!) {
-          insert_Projects(objects: {
-                            name: $name, description: $description, image: $image, created_user_id: $created_user_id,
-                            label: { data: { x: "[$label_Xmin, $label_Xmax]", y: "[$label_Ymin, $label_Ymax]" } }
-                          }) {
+        mutation insert_Projects(
+          $name: String!, $description: String, $image: String, $created_user_id: uuid!,
+          $label_x_min: String!, $label_x_max: String!, $label_y_min: String!, $label_y_max: String!,
+        ) {
+          insert_Projects(
+            objects: {
+              name: $name, description: $description, image: $image, created_user_id: $created_user_id,
+              label_x_min: $label_x_min, label_x_max: $label_x_max, label_y_min: $label_y_min, label_y_max: $label_y_max
+            }) {
             returning {
               id
               created_user_id
@@ -206,10 +198,10 @@ export class GraphqlClientService {
         name: project.name,
         description: project.description,
         image: project.image,
-        label_Xmin: project.label.x[0],
-        label_Xmax: project.label.x[1],
-        label_Ymin: project.label.y[0],
-        label_Ymax: project.label.y[1],
+        label_x_min: project.label_x_min,
+        label_x_max: project.label_x_max,
+        label_y_min: project.label_y_min,
+        label_y_max: project.label_y_max,
         created_user_id: project.created_user_id
       }
     });
@@ -217,13 +209,16 @@ export class GraphqlClientService {
   public updateProject(project: IProject) {
     return this.apollo.mutate({
       mutation: gql`
-        mutation insert_Projects($name: String!, $description: String, $image: String,
-                                 $label_Xmin: String!, $label_Xmax: String!, $label_Ymin: String!, $label_Ymax: String!,
-                                 $created_user_id: uuid!) {
-          insert_Projects(objects: {
-                            name: $name, description: $description, image: $image, created_user_id: $created_user_id,
-                            label: { data: { x: "[$label_Xmin, $label_Xmax]", y: "[$label_Ymin, $label_Ymax]" } }
-                          }) {
+        mutation update_Projects(
+          $id: uuid!, $name: String!, $description: String, $image: String, $created_user_id: uuid!,
+          $label_x_min: String!, $label_x_max: String!, $label_y_min: String!, $label_y_max: String!
+        ) {
+          update_Projects(
+            where: {id: {_eq: $id}},
+            _set : {
+              name: $name, created_user_id: $created_user_id, description: $description, image: $image,
+              label_x_min: $label_x_min, label_x_max: $label_x_max, label_y_min: $label_y_min, label_y_max: $label_y_max
+            }) {
             returning {
               id
               created_user_id
@@ -232,13 +227,14 @@ export class GraphqlClientService {
           }
         }`,
       variables: {
+        id: project.id,
         name: project.name,
         description: project.description,
         image: project.image,
-        label_Xmin: project.label.x[0],
-        label_Xmax: project.label.x[1],
-        label_Ymin: project.label.y[0],
-        label_Ymax: project.label.y[1],
+        label_x_min: project.label_x_min,
+        label_x_max: project.label_x_max,
+        label_y_min: project.label_y_min,
+        label_y_max: project.label_y_max,
         created_user_id: project.created_user_id
       }
     });

@@ -24,9 +24,9 @@
                       <mat-panel-title>
                         Project info
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
@@ -35,6 +35,9 @@
                     <mat-form-field>
                       <textarea matInput placeholder="project description" [(ngModel)]="project.description">{{ project.description }}</textarea>
                     </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="image url" [(ngModel)]="project.image">
+                     </mat-form-field>
                 
                     <!-- <mat-action-row>
                       <button mat-button color="primary" (click)="setStep(2, project.id)">Next</button>
@@ -46,25 +49,25 @@
                       <mat-panel-title>
                         Label
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
-                      <input matInput placeholder="-X" [(ngModel)]="project.label.x[0]">
+                      <input matInput placeholder="X-axis(-) label" [(ngModel)]="project.label_x_min">
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="+X" [(ngModel)]="project.label.x[1]">
+                      <input matInput placeholder="X-axis(+) label" [(ngModel)]="project.label_x_max">
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="-Y" [(ngModel)]="project.label.y[0]">
+                      <input matInput placeholder="X-axis(-) label" [(ngModel)]="project.label_y_min">
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="+Y" [(ngModel)]="project.label.y[1]">
+                      <input matInput placeholder="X-axis(+) label" [(ngModel)]="project.label_y_max">
                     </mat-form-field>
                     <!-- <mat-form-field>
-                        <p>Z-axis:</p><input matInput placeholder="Z-axis" [(ngModel)]="project.label.z">
+                        <p>Z-axis:</p><input matInput placeholder="Z-axis" [(ngModel)]="project.label_z_min">
                     </mat-form-field> -->
 
                    <!-- <mat-action-row>
@@ -78,9 +81,9 @@
                       <mat-panel-title>
                         Attributes
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit or Add
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
 
                     <ng-container *ngFor="let attribute of project.attributes">
@@ -105,7 +108,7 @@
                   <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
                 </div>
                 <div class="right-block">
-                  <button mat-raised-button color="" class="color-edit" (click)="setToggle({target: project.id, open: toggle.open === 'all' ? 'none' : 'all'})">Edit</button>
+                  <button mat-raised-button color="" class="color-edit" (click)="updateProject(project)">Update</button>
                   <button mat-raised-button color="warn">Delete</button>
                 </div>
               </mat-card-actions>
@@ -137,18 +140,20 @@
                       <mat-panel-title>
                         Project info
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
-                      <input matInput placeholder="project name" [(ngModel)]="project.name">
+                      <input matInput placeholder="project name" [(ngModel)]="project.name" disabled>
                     </mat-form-field>
                     <mat-form-field>
-                      <textarea matInput placeholder="project description" [(ngModel)]="project.description">{{ project.description }}</textarea>
+                      <textarea matInput placeholder="project description" [(ngModel)]="project.description" disabled>{{ project.description }}</textarea>
                     </mat-form-field>
-
+                    <mat-form-field>
+                      <input matInput placeholder="image url" [(ngModel)]="project.image" disabled>
+                     </mat-form-field>
                   </mat-expansion-panel>
                 
                   <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'label')" (click)="setToggle({target: project.id, open: 'label'})">
@@ -156,22 +161,22 @@
                       <mat-panel-title>
                         Label
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field>
-                      <input matInput placeholder="-X" [(ngModel)]="project.label.x[0]">
+                      <input matInput placeholder="-X" [(ngModel)]="project.label_x_min" disabled>
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="+X" [(ngModel)]="project.label.x[1]">
+                      <input matInput placeholder="+X" [(ngModel)]="project.label_x_max" disabled>
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="-Y" [(ngModel)]="project.label.y[0]">
+                      <input matInput placeholder="-Y" [(ngModel)]="project.label_y_min" disabled>
                     </mat-form-field>
                     <mat-form-field>
-                      <input matInput placeholder="+Y" [(ngModel)]="project.label.y[1]">
+                      <input matInput placeholder="+Y" [(ngModel)]="project.label_y_max" disabled>
                     </mat-form-field>
 
                   </mat-expansion-panel>
@@ -181,16 +186,16 @@
                       <mat-panel-title>
                         Attributes
                       </mat-panel-title>
-                      <mat-panel-description>
+                      <!-- <mat-panel-description>
                         Edit or Add
-                      </mat-panel-description>
+                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field *ngFor="let attribute of project.attributes">
-                      <input matInput placeholder="name" [(ngModel)]="attribute.name">
+                      <input matInput placeholder="name" [(ngModel)]="attribute.name" disabled>
                     </mat-form-field>
                     {{ attribute?.configs[0].name }}
-                    <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs"></mat-checkbox>
+                    <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs" disabled></mat-checkbox>
 
                   </mat-expansion-panel>
                 
@@ -201,7 +206,7 @@
                   <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button>
                 </div>
                 <div class="right-block">
-                  <button mat-raised-button color="" class="color-edit" (click)="setToggle({target: project.id, open: toggle.open === 'all' ? 'none' : 'all'})">Edit</button>
+                  <!-- <button mat-raised-button color="" class="color-edit" (click)="updateProject(project)">Update</button> -->
                   <button mat-raised-button color="warn">Delete</button>    
                 </div>
               </mat-card-actions>
@@ -227,16 +232,19 @@
                   <textarea matInput placeholder="project description" [(ngModel)]="newProject.description">{{ newProject.description }}</textarea>
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="-X" [(ngModel)]="newProject.label.x[0]">
+                  <input matInput placeholder="image url (https://exapmle.com/sample.png)" [(ngModel)]="newProject.image">
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="+X" [(ngModel)]="newProject.label.x[1]">
+                  <input matInput placeholder="-X" [(ngModel)]="newProject.label_x_min">
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="-Y" [(ngModel)]="newProject.label.y[0]">
+                  <input matInput placeholder="+X" [(ngModel)]="newProject.label_x_max">
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="+Y" [(ngModel)]="newProject.label.y[1]">
+                  <input matInput placeholder="-Y" [(ngModel)]="newProject.label_y_min">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput placeholder="+Y" [(ngModel)]="newProject.label_y_max">
                 </mat-form-field>
                 <mat-form-field *ngFor="let attribute of newProject.attributes">
                   <input matInput placeholder="name" [(ngModel)]="attribute.name">

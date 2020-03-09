@@ -29,19 +29,21 @@ export class ValidationService {
       name: obj.name,
       description: obj.description,
       image: obj.image,
-      label: obj.label,
+      label_x_min: obj.label_x_min,
+      label_x_max: obj.label_x_max,
+      label_y_min: obj.label_y_min,
+      label_y_max: obj.label_y_max,
       created_user_id: this.user.id
     }
     if (type === 'UPDATE') { data.id = obj.id; }
     if (
       (type === 'ADD' || _.isString(data.id)) &&
-      _.isString(data.name) &&
-      _.isObject(data.label) &&
-      _.isString(data.label.x[0]) &&
-      _.isString(data.label.x[1]) &&
-      _.isString(data.label.y[0]) &&
-      _.isString(data.label.y[1]) &&
-      _.isString(data.created_user_id)
+      !_.isEmpty(data.name) && _.isString(data.name) &&
+      !_.isEmpty(data.label_x_min) && _.isString(data.label_x_min) &&
+      !_.isEmpty(data.label_x_max) && _.isString(data.label_x_max) &&
+      !_.isEmpty(data.label_y_min) && _.isString(data.label_y_min) &&
+      !_.isEmpty(data.label_y_max) && _.isString(data.label_y_max) &&
+      !_.isEmpty(data.created_user_id) && _.isString(data.created_user_id)
     ) {
       isValid = true;
     }

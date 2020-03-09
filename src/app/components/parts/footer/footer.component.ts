@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ContainerService } from '../../services/container.service';
-// import { ProjectListComponent } from '../project-list/project-list.component';
-
-// import { ProjectListComponent } from '../project-list/project-list.component';
+import { ContainerService } from '../../../services/container.service';
 
 type IFooterCmd = "project-list" | "project-shared" | "project-add";
 

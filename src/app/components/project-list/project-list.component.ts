@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import _ from 'lodash';
 
 import { Template, IApp, IUser, IProject, ISharedProject } from 'src/app/templates/template';
 import { GraphqlClientService } from '../../services/graphql-client.service';
@@ -26,9 +27,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     attributes: []
   };
   public sharedProjects: IProject[];
-  public step: number = -1;
   public selectedTab: number = 0;
-  public targetId: string = '';
   public toggle: IToggleConfig = {
     target: '',
     open: 'none'
@@ -45,7 +44,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private valid: ValidationService,
     private graphql: GraphqlClientService,
-    private container: ContainerService
+    private container: ContainerService,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -57,12 +57,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
-    this.userSubscription = this.mapService.userSubject.subscribe(data => this.app['user'] = data );
-    this.projectsSubscription = this.mapService.projectsSubject.subscribe(data => this.app['projects'] = data);
-    this.attributesSubscription = this.mapService.projectsSubject.subscribe(data => this.app['attributes'] = data);
+    this.userSubscription = this.mapService.userSubject.subscribe(data => this.app['user'] = _.cloneDeep(data) );
+    this.projectsSubscription = this.mapService.projectsSubject.subscribe(data => this.app['projects'] = _.cloneDeep(data));
+    this.attributesSubscription = this.mapService.projectsSubject.subscribe(data => this.app['attributes'] = _.cloneDeep(data));
     this.sharedProjectsSubscription = this.mapService.sharedProjectsSubject.subscribe(data => {
-      this.app['shared_projects'] = data;
-      this.sharedProjects = data.map((shared) => {
+      this.app['shared_projects'] = _.cloneDeep(data);
+      this.sharedProjects = this.app['shared_projects'].map((shared) => {
         shared.project.authority = shared.authority;
         return shared.project;
       });
@@ -80,31 +80,66 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   public addProject() {
     const {data , isValid} = this.valid.validProject(this.newProject, 'ADD');
     if(!isValid) {
-      return this.modalService.openSnackBar({
-        message: `Please fill inputs: ${this.newProject.name}`
+      this.modalService.openSnackBar({
+        message: `Please fill inputs: ${this.newProject.name}`,
+        action: 'OK'
       });
+      return;
     }
     this.graphql.addProject(data).subscribe((res) => {
       console.log('Got data', res);
       this.modalService.openSnackBar({
-        message: `Success add project: ${data.name}`
+        message: `Success add project: ${data.name}`,
+        action: 'OK'
       });
       // initialize new project data
       this.newProject = Template.project();
     },(error) => {
       console.log('There was an error sending the query', error);
       this.modalService.openSnackBar({
-        message: `Failed add project: ${this.newProject.name}`
+        message: `Failed add project: ${this.newProject.name}`,
+        action: 'OK'
       });
     });
+  }
+
+  public updateProject(project) {
+    const {data , isValid} = this.valid.validProject(project, 'UPDATE');
+    if(!isValid) {
+      this.modalService.openSnackBar({
+        message: `Please fill inputs: ${project.name}`,
+        action: 'OK'
+      });
+      // projectの初期化
+      this.undoEditById(data.id);
+      return;
+    }
+    this.graphql.updateProject(data).subscribe((res) => {
+      this.modalService.openSnackBar({
+        message: `Success updated project: ${data.name}`
+      });
+    },(error) => {
+      console.log('There was an error sending the query', error);
+      this.modalService.openSnackBar({
+        message: `Failed updated project: ${this.newProject.name}`
+      });
+      // projectの初期化
+      this.undoEditById(data.id);
+    });
+  }
+
+  private undoEditById(id: string) {
+    console.log(this.app);
+    this.app.projects = this.mapService.getProjects();
+    console.log(this.app);
+    this.changeDetectorRef.detectChanges();
   }
 
   private clear() {
     this.app = undefined;
     this.sharedProjects = undefined;
-    this.step = -1;
-    this.selectedTab = 0;  
-    this.targetId = '';
+    this.selectedTab = 0;
+    this.toggle = {target: '', open: 'none'};
     this.newProject = Template.project();
     this.userSubscription.unsubscribe();
     this.projectsSubscription.unsubscribe();

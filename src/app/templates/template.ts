@@ -26,20 +26,16 @@ export interface IProject {
     name: string,
     description?: string,
     image?: string,
-    label: ILabel,
+    label_x_min: string,
+    label_x_max: string,
+    label_y_min: string,
+    label_y_max: string,
+    label_z_min?: string,
+    label_z_max?: string,
     plots?: IPlot[],
     created_user_id: string,
     // for shared project
     authority?: 0 | 1 | 2
-}
-/**
- * Labels table
- */
-export interface ILabel {
-    id?: string,
-    x: [string, string],
-    y: [string, string],
-    z?: [string, string]
 }
 /**
  * Plots table
@@ -48,11 +44,9 @@ export interface ILabel {
 export interface IPlot {
     id?: string,
     name: string,
-    coordinate: {
-        x: number,
-        y: number,
-        z?: number
-    },
+    x: number,
+    y: number,
+    z?: number,
     belongs?: IBelong[],
     created_user_id: string,
     project_id?: string
@@ -125,11 +119,12 @@ export class Template {
             name: 'New Project',
             image: '',
             description: 'This is new project. You can write description here.',
-            label: {
-                x: ['-x-label', '+x-label'],
-                y: ['-y-label', '+y-label'],
-                z: ['-z-label', '+z-label']
-            },
+            label_x_min: '-x-label',
+            label_x_max: '+x-label',
+            label_y_min: '-y-label',
+            label_y_max: '+y-label',
+            label_z_min: '-z-label',
+            label_z_max: '+z-label',
             plots: [this.plot()],
             created_user_id: this.user().id
         };
@@ -155,11 +150,9 @@ export class Template {
         return {
             id: '',
             name: 'New Plot',
-            coordinate: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
+            x: 0,
+            y: 0,
+            z: 0,
             belongs: [this.belong()],
             created_user_id: this.user().id
         };
@@ -193,18 +186,16 @@ export class Template {
                 created_user_id: this.user().id,
                 description: '犬をかわいい、かっこいいマッピングする',
                 image: 'https://material.angular.io/assets/img/examples/shiba2.jpg',
-                label: {
-                    x: ['かわいい', 'かっこいい'],
-                    y: ['小さい', '大きい']
-                },
+                label_x_min: 'かわいい',
+                label_x_max: 'かわいい',
+                label_y_min: 'かわいい',
+                label_y_max: 'かわいい',
                 plots: [{
                     id: 'plt1',
                     name: 'チワワ',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: -50,
-                        y: -50
-                    },
+                    x: -50,
+                    y: -50,
                     belongs: [{
                         attribute: {
                             name: 'attr1',
@@ -216,10 +207,8 @@ export class Template {
                     id: 'plt2',
                     name: 'ダックスフンド',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: 50,
-                        y: -50
-                    },
+                    x: 50,
+                    y: -50,
                     belongs: [{
                         attribute: {
                             name: 'attr1',
@@ -231,10 +220,8 @@ export class Template {
                     id: 'plt3',
                     name: 'シェパード',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: 50,
-                        y: 50
-                    },
+                    x: 50,
+                    y: 50,
                     belongs: [{
                         attribute: {
                             name: 'attr1',
@@ -246,10 +233,8 @@ export class Template {
                     id: 'plt4',
                     name: 'ラブラドール',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: -50,
-                        y: 50
-                    },
+                    x: -50,
+                    y: 50,
                     belongs: [{
                         attribute: {
                             name: "attr1",
@@ -260,10 +245,8 @@ export class Template {
                     id: 'plt5',
                     name: 'パピヨン',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: 67,
-                        y: -40
-                    },
+                    x: 67,
+                    y: -40,
                     belongs: [{
                         attribute: {
                             name: 'attr1',
@@ -275,28 +258,24 @@ export class Template {
                     id: 'origin',
                     name: '柴犬',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: 0,
-                        y: 0
-                    }
+                    x: 0,
+                    y: 0,
                 }],
             }, {
                 id: 'prj2',
                 name: 'dummy2',
                 description: 'This is description for dummy',
                 created_user_id: this.user().id,
-                label: {
-                    x: ['-x-label', '+x-label'],
-                    y: ['-y-label', '+y-label']
-                },
+                label_x_min: '-x-label',
+                label_x_max: '+x-label',
+                label_y_min: '-y-label',
+                label_y_max: '+y-label',
                 plots: [{
                     id: 'plt1',
                     name: 'plot1',
                     created_user_id: this.user().id,
-                    coordinate: {
-                        x: 1,
-                        y: 1
-                    },
+                    x: 1,
+                    y: 1,
                     belongs: [{
                         attribute: {
                             name: 'attr1',

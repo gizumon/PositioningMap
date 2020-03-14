@@ -1,0 +1,73 @@
+version: 2.1
+orbs:
+  firebase-deploy: cloudliner/firebase-deploy@0.0.2
+executors:
+  default:
+    working_directory: ~/workspace
+    docker:
+      - image: node:10
+
+commands:
+  restore_fr_npm:
+    steps:
+      - restore_cache:
+          name: Restore frontend npm dependencies
+          key: npm-v1.0-{{ checksum "package.json" }}
+  save_fr_npm:
+    steps:
+      - save_cache:
+          name: Cache frontend npm dependencies
+          key: npm-v1.0-{{ checksum "package.json" }}
+          paths:
+            - ~/workspace/node_modules
+
+jobs:
+  setup:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - run:
+          name: Install frontend dependencies
+          command: npm install
+      - save_fr_npm
+
+  build:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - restore_fr_npm
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: /root/workspace
+          paths:
+            - .git/*
+            - ./*
+
+  deploy:
+    executor:
+      name: default
+    environment:
+      FIREBASE_PJ: PosmApp
+      DIR: /root/workspace
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - run: pwd && ls -l && ls -l ./
+      - run:
+          name: Deploy to firebase
+          command: cd $DIR && pwd && ls -l && chmod 777 ./firebase-deploy/firebase && ./firebase-deploy/firebase deploy --token "$FIREBASE_TOKEN"
+
+workflows:
+  pull-request:
+    jobs:
+      - setup
+      - build:
+          requires:
+            - setup
+      - deploy:
+          requires:
+            - build

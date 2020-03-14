@@ -53,6 +53,10 @@ export class AppComponent implements OnInit {
     this.userName = userName
   }
 
+  gotoHome() {
+    this.router.navigateByUrl('/projects');
+  }
+
   public opneSnackBar(message: string, action?: string, config?: MatSnackBarConfig) {
     this.snackBar.open(message, action, config);
   }

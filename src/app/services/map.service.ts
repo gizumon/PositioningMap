@@ -14,6 +14,7 @@ import { environment } from '../../environments/environment';
 })
 
 export class MapService {
+  public isInitialized: boolean = false;
   public userSubject: Subject<IUser> = new Subject();
   public projectsSubject: Subject<IProject[]> = new Subject();
   public sharedProjectsSubject: Subject<ISharedProject[]> = new Subject();
@@ -66,6 +67,7 @@ export class MapService {
     this.graphql.getProjects(user_id).subscribe(result => {
       this.projects = result.data['Projects'];
       this.projectsSubject.next(this.projects);
+      this.isInitialized = true;
     });
   }
 

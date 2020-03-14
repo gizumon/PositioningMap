@@ -52,20 +52,29 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.initialize();
   }
 
-  ngOnDestroy() {
-    this.clear();
-  }
+  ngOnDestroy() { }
 
   private initialize() {
+    if (this.mapService.isInitialized) {
+      this.setApp(); 
+    }
     this.userSubscription = this.mapService.userSubject.subscribe(data => this.app['user'] = _.cloneDeep(data) );
     this.projectsSubscription = this.mapService.projectsSubject.subscribe(data => this.app['projects'] = _.cloneDeep(data));
-    this.attributesSubscription = this.mapService.projectsSubject.subscribe(data => this.app['attributes'] = _.cloneDeep(data));
+    this.attributesSubscription = this.mapService.attributesSubject.subscribe(data => this.app['attributes'] = _.cloneDeep(data));
     this.sharedProjectsSubscription = this.mapService.sharedProjectsSubject.subscribe(data => {
       this.app['shared_projects'] = _.cloneDeep(data);
-      this.sharedProjects = this.app['shared_projects'].map((shared) => {
-        shared.project.authority = shared.authority;
-        return shared.project;
-      });
+      this.setSharedProjects();
+    });
+  }
+
+  private setApp() {
+    this.app = this.mapService.getApp();
+    this.setSharedProjects();
+  }
+  private setSharedProjects() {
+    this.sharedProjects = this.app['shared_projects'].map((shared) => {
+      shared.project.authority = shared.authority;
+      return shared.project;
     });
   }
 

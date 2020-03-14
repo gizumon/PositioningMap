@@ -4,12 +4,11 @@ import { Observable, Subject } from 'rxjs';
 
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
+// import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
 
 import { IUser, IProject, IAttribute, ISharedProject, IApp } from '../templates/template';
 import { LoggerService } from './logger.service';
 import { ApolloQueryResult } from 'apollo-client';
-import { type } from 'os';
 
 @Injectable({
   providedIn: 'root'

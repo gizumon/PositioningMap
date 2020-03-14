@@ -59,7 +59,7 @@ jobs:
       - run: pwd && ls -l && ls -l ./
       - run:
           name: Deploy to firebase
-          command: cd $DIR && pwd && ls -l && chmod 777 ./firebase-deploy/firebase && ./firebase-deploy/firebase deploy --token "$FIREBASE_TOKEN"
+          command: cd $DIR && pwd && ls -l && chmod 777 ./node_modules/.bin/firebase && ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN"
 
 workflows:
   pull-request:

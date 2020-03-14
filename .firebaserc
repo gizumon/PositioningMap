@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "posmapp-8a86e"
+    "default": "posmapp-8a86e",
+    "production": "posmapp-8a86e"
   }
 }

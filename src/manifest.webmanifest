@@ -1,6 +1,6 @@
 {
-  "name": "PositioningMap",
-  "short_name": "PositioningMap",
+  "name": "PosmApp",
+  "short_name": "PosmApp",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

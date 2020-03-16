@@ -11,10 +11,13 @@
               <mat-card-header>
                 <div mat-card-avatar class="project-header-image"></div>
                   <mat-card-title>{{ project.name }}</mat-card-title>
-                  <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
+                  <!-- <mat-card-subtitle>{{ project.id }}</mat-card-subtitle> -->
               </mat-card-header>
               <ng-template [ngIf]="project.image">
-                <img mat-card-image [src]="project.image" alt="Photo of project">
+                <div class="img-background">
+                  <img class="card-img" [src]="project.image" alt="Photo of project">
+                </div>
+                <!-- <img mat-card-image [src]="project.image" alt="Photo of project"> -->
               </ng-template>
               <mat-card-content>
                 <p>{{ project.description }}</p>
@@ -76,14 +79,11 @@
                     </mat-action-row> -->
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
+                  <!-- <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Attributes
                       </mat-panel-title>
-                      <!-- <mat-panel-description>
-                        Edit or Add
-                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
 
                     <ng-container *ngFor="let attribute of project.attributes">
@@ -95,11 +95,7 @@
                         <mat-checkbox [(ngModel)]="config.isChecked"></mat-checkbox>
                       </ng-container>
                     </ng-container>
-                    <!-- <mat-action-row>
-                      <button mat-button color="warn" (click)="setStep(2, project.id)">Previous</button>
-                      <button mat-button color="primary" (click)="setStep(-1, project.id)">End</button>
-                    </mat-action-row> -->
-                  </mat-expansion-panel>
+                  </mat-expansion-panel> -->
                 
                 </mat-accordion>
               </mat-card-content>
@@ -127,10 +123,13 @@
               <mat-card-header>
                 <div mat-card-avatar class="project-header-image"></div>
                   <mat-card-title>{{ project.name }}</mat-card-title>
-                  <mat-card-subtitle>{{ project.id }}</mat-card-subtitle>
+                  <!-- <mat-card-subtitle>{{ project.id }}</smat-card-subtitle> -->
               </mat-card-header>
               <ng-template [ngIf]="project.image">
-                <img mat-card-image [src]="project.image" alt="Photo of project">
+                <div class="img-background">
+                  <img class="card-img" [src]="project.image" alt="Photo of project">
+                </div>
+                <!-- <img mat-card-image [src]="project.image" alt="Photo of project"> -->
               </ng-template>
               <mat-card-content>
                 <p>{{ project.description }}</p>
@@ -181,14 +180,11 @@
 
                   </mat-expansion-panel>
                 
-                  <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
+                  <!-- <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Attributes
                       </mat-panel-title>
-                      <!-- <mat-panel-description>
-                        Edit or Add
-                      </mat-panel-description> -->
                     </mat-expansion-panel-header>
                 
                     <mat-form-field *ngFor="let attribute of project.attributes">
@@ -197,7 +193,7 @@
                     {{ attribute?.configs[0].name }}
                     <mat-checkbox [(ngModel)]="config.isChecked" *ngFor="let config of attribute?.configs" disabled></mat-checkbox>
 
-                  </mat-expansion-panel>
+                  </mat-expansion-panel> -->
                 
                 </mat-accordion>
               </mat-card-content>

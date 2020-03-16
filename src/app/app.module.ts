@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerService } from './services/service-worker.service';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
 
@@ -96,6 +97,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFireAuthModule,
     FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerService,
     RouterModule,
     FormsModule,
     GraphQLModule,

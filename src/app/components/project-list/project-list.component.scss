@@ -17,16 +17,28 @@
   .project-card {
     max-width: 350px;
     // max-height: 500px;
-    margin: 20px;
+    margin: 10px 30px;
     .mat-card-subtitle {
       width: calc(300px - 72px);
       overflow: hidden;
       white-space: nowrap;
     }
+    .img-background {
+      width: calc(100% + 32px);
+      margin: 0px -16px;
+      text-align: center;
+      background-color: rgba(192,192,192,0.5);
+      .card-img {
+        // width: unset;
+        max-height: 200px; 
+        margin-bottom: -3px;
+      }
+    }
   }
   .project-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-image: url('/assets/icons/posmapp-icon.png');
     background-size: cover;
+    margin: -8px -8px 0px -8px;
   }
   .card-content {
     width: 100%;

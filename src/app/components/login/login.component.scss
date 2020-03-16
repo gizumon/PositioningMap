@@ -6,12 +6,13 @@
     font-family: 'Londrina Shadow', cursive;
     text-align: center;
     img {
-        width: 100%;
-        margin: 20px auto 0px auto;        
+        width: 35%;
+        // max-height: calc(100% - 56px - 50px - 55 * 4px - 60px);
+        margin: 10px auto 0px auto;        
     }
     p {
         margin-top: 0px;
-        margin-bottom: 15px;
+        margin-bottom: 5px;
     }
 }
 .login-card {

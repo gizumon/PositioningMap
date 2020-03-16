@@ -97,7 +97,6 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFireAuthModule,
     FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    ServiceWorkerService,
     RouterModule,
     FormsModule,
     GraphQLModule,
@@ -121,7 +120,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   providers: [
     // LoggerService,
     // MapService,
-    // LoginService
+    // LoginService,
+    ServiceWorkerService,
   ],
   bootstrap: [AppComponent]
 })

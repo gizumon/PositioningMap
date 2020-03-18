@@ -38,7 +38,7 @@ export class MapService {
   initialize(authUser) {
     if (!authUser) { return this.clear() }
     this.userCredential = authUser;
-    const authId = this.userCredential.isAnonymous ? environment.auth.anonymous : this.userCredential.id;
+    const authId = this.userCredential.isAnonymous ? environment.auth.anonymous.auth_id : this.userCredential.id;
     // user情報取得後、その他の情報を取得
     this.userSubject.subscribe((user: IUser) => {
       console.log('run init subject', this.user);

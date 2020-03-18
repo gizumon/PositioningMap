@@ -2,11 +2,13 @@
   .tab-icon {
     margin-left: 5px;
   }
-  .mat-tab-labels {
-    flex: 1 1 auto;
-    .mat-tab-lable {
-      width: 33%;
-    } 
+  .mat-tab-label-container {
+    .mat-tab-labels {
+      // flex: 1 1 auto;
+      .mat-tab-lable {
+        min-width: 33%!important;
+      } 
+    }
   }
   .card-list {
     display: flex;

@@ -7,10 +7,8 @@ export type IFooterCmd = 'project-list' | 'project-shared' | 'project-add';
   providedIn: 'root'
 })
 export class ContainerService {
-  public tabSubject: Subject<IFooterCmd>;
-  constructor() {
-    
-  }
+  public tabSubject: Subject<IFooterCmd> = new Subject();
+  constructor() { }
   
   // tabObservable() {
   //   this.tabIndexObservable = new Observable.create((observer) => {

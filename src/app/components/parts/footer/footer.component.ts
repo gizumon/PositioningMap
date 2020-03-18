@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ContainerService } from '../../../services/container.service';
+import { Router, NavigationEnd } from '@angular/router';
 
-type IFooterCmd = "project-list" | "project-shared" | "project-add";
+type IFooterCmd = 'project-list' | 'project-shared' | 'project-add';
+type IPage = 'login' | 'projects' | 'map';
 
 @Component({
   selector: 'app-footer',
@@ -10,12 +12,14 @@ type IFooterCmd = "project-list" | "project-shared" | "project-add";
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-  isPC: Boolean = false;
+  public isPC: Boolean = false;
+  public page: IPage;
   // resizeObservable: Observable<UIEvent>;
 
   constructor(
     // private projectList: ProjectListComponent
-    private containerService: ContainerService
+    private containerService: ContainerService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -24,26 +28,22 @@ export class FooterComponent implements OnInit {
     this.containerService.resizeObserve().subscribe(e => {
       this.checkWindowSize(window.innerWidth);
     });
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.log(event.url);
+        this.page = event.url.match('projects') ? 'projects'
+                  : event.url.match('map') ? 'map'
+                  : 'login';
+      }
+    })
   }
 
   checkWindowSize(windowSize: number) {
     this.isPC = windowSize > 480;
   }
 
-  public onClick(type: IFooterCmd) {
-    switch(type) {
-      case "project-list":
-        // ProjectListComponent.changeTab(0);
-        break;
-      case "project-shared":
-        // this.projectList.changeTab(1);
-        break;
-      case "project-add":
-        // this.projectList.changeTab(2);
-        break;
-      default:
-        break;
-    }
+  onClick(cmd: IFooterCmd) {
+    this.containerService.changeTab(cmd);
   }
 
 }

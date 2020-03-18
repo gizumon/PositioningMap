@@ -1,16 +1,28 @@
 <ng-template [ngIf]="!isPC">
   <div class="footer-space"></div>
   <div id="footer">
-    <ul id="projects-footer" class="fotter-btn-block">
-      <li (class)="onClick('project-list')">
-        <mat-icon>folder</mat-icon>
-      </li>
-      <li (class)="onClick('project-shared')">
-        <mat-icon>folder_shared</mat-icon>
-      </li>
-      <li (class)="onClick('project-add')">
-        <mat-icon>create_new_folder</mat-icon>
-      </li>
-    </ul>
+    <ng-template [ngIf]="page === 'projects'">
+      <ul id="projects-footer" class="fotter-btn-block">
+        <li (click)="onClick('project-list')">
+          <mat-icon>folder</mat-icon>
+        </li>
+        <li (click)="onClick('project-shared')">
+          <mat-icon>folder_shared</mat-icon>
+        </li>
+        <li (click)="onClick('project-add')">
+          <mat-icon>create_new_folder</mat-icon>
+        </li>
+      </ul>
+    </ng-template>
+    <ng-template [ngIf]="page === 'map'">
+      <ul id="map-footer" class="fotter-btn-block">
+        <li (click)="onClick('map')">
+          <mat-icon>folder</mat-icon>
+        </li>
+        <li (click)="onClick('plot-add')">
+          <mat-icon>create_new_folder</mat-icon>
+        </li>
+      </ul>
+    </ng-template>
   </div>      
 </ng-template>

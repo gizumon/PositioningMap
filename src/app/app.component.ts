@@ -12,9 +12,6 @@ import { MatSnackBar, MatSnackBarConfig } from "@angular/material";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  isLogin: Boolean = false;
-  isAnonymous: Boolean = false;
-  userName: string;
 
   constructor(
     private loginService: LoginService,
@@ -22,10 +19,12 @@ export class AppComponent implements OnInit {
     private router: Router,
     private log: LoggerService,
     public snackBar: MatSnackBar
-  ) {
+  ) { }
 
-  }
-  title = 'PosMap';
+  public isLogin: Boolean = false;
+  public isAnonymous: Boolean = false;
+  public userName: string;
+  public title = 'PosmApp';
 
   ngOnInit() {
     this.loginService.userObservable.subscribe((user) => {

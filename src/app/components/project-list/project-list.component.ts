@@ -7,7 +7,7 @@ import { GraphqlClientService } from '../../services/graphql-client.service';
 import { MapService } from '../../services/map.service';
 import { ModalService } from '../../services/modal.service';
 import { ValidationService } from '../../services/validation.service';
-import { ContainerService } from '../../services/container.service';
+import { ContainerService, IFooterCmd } from '../../services/container.service';
 
 interface IToggleConfig {
   target: string,
@@ -38,6 +38,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   private projectsSubscription: Subscription;
   private sharedProjectsSubscription: Subscription;
   private attributesSubscription: Subscription;
+  private tabConfig = {
+    'project-list': 0,
+    'project-shared': 1,
+    'project-add': 2
+  }
 
   constructor(
     private mapService: MapService,
@@ -50,6 +55,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initialize();
+    this.container.tabSubject.subscribe((tab: IFooterCmd) => {
+      this.selectedTab = this.tabConfig[tab] || 0;
+    })
   }
 
   ngOnDestroy() { }

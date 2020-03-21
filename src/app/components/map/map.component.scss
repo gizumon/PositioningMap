@@ -1,25 +1,49 @@
-.map-card {
-    margin: 15px;
-    max-height: 80px;
-}
-#pixiContainer {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-#plotDetail {
-    position: absolute;
-    max-width: 200px;
-    max-height: 100px;
-    padding: 5px;
-    text-align: center;
-    font-size: 9px;
-    background-color: #ffffffDD;
-    .mat-card-title {
-        font-size: 12px;
-        margin-bottom: 3px;
+#project-map {
+    .map-card {
+        margin: 15px;
+        max-height: 80px;
+        .title-image {
+            max-width: 64px;
+            max-height: 36px;
+            margin-right: 5px;
+        }
+        .title-block {
+            font-weight: 600;
+            line-height: 36px;
+        }
+        .flex-block {
+            display: flex;
+            margin-top: -8px;
+            .left-block {
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+            .right-block {
+                margin-left: auto;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+        }
     }
-    .mat-card-content {
+    #pixiContainer {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    #plotDetail {
+        position: absolute;
+        max-width: 200px;
+        max-height: 100px;
+        padding: 5px;
+        text-align: center;
         font-size: 9px;
+        background-color: #ffffffDD;
+        .mat-card-title {
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        .mat-card-content {
+            font-size: 9px;
+        }
     }
 }

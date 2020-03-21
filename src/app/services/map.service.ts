@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { GraphqlClientService } from './graphql-client.service'
 import { Template, IApp, IProject, IUser, ISharedProject, IAttribute } from '../templates/template';
-import { LoginService, IUserCredential } from './login.service';
+import { LoginService, IAuthCredential } from './login.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class MapService {
   public projectsSubject: Subject<IProject[]> = new Subject();
   public sharedProjectsSubject: Subject<ISharedProject[]> = new Subject();
   public attributesSubject: Subject<IAttribute[]> = new Subject();
-  private userCredential: IUserCredential;
+  private auth: IAuthCredential;
   private user: IUser;
   private projects: IProject[];
   private attributes: IAttribute[];
@@ -30,15 +30,15 @@ export class MapService {
     private loginService: LoginService,
     private graphql: GraphqlClientService
   ) {
-    this.loginService.userObservable.subscribe(() => {
-      this.initialize(this.loginService.getUser());
+    this.loginService.loginObservable.subscribe(() => {
+      this.initialize(this.loginService.getAuth());
     });
   }
   
   initialize(authUser) {
     if (!authUser) { return this.clear() }
-    this.userCredential = authUser;
-    const authId = this.userCredential.isAnonymous ? environment.auth.anonymous.auth_id : this.userCredential.id;
+    this.auth = authUser;
+    const authId = this.auth.isAnonymous ? environment.auth.anonymous.auth_id : this.auth.id;
     // user情報取得後、その他の情報を取得
     this.userSubject.subscribe((user: IUser) => {
       console.log('run init subject', this.user);
@@ -104,7 +104,7 @@ export class MapService {
   }
 
   public clear() {
-    this.userCredential = undefined;
+    this.auth = undefined;
     this.user = undefined;
     this.projects = undefined;
     this.attributes = undefined;

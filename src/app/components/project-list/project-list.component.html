@@ -1,5 +1,5 @@
 <div id="project-list">
-  <mat-tab-group [selectedIndex]="selectedTab">
+  <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedTab">
       <mat-tab>
         <ng-template mat-tab-label>
           Projects
@@ -13,11 +13,16 @@
                   <mat-card-title>{{ project.name }}</mat-card-title>
                   <!-- <mat-card-subtitle>{{ project.id }}</mat-card-subtitle> -->
               </mat-card-header>
-              <ng-template [ngIf]="project.image">
+              <div *ngIf="project.image; then showImageTemplate; else noImageTemplate"></div>
+              <ng-template #showImageTemplate>
                 <div class="img-background">
-                  <img class="card-img" [src]="project.image" alt="Photo of project">
+                  <img class="card-img" [src]="project.image" alt="Please check image url">
                 </div>
-                <!-- <img mat-card-image [src]="project.image" alt="Photo of project"> -->
+              </ng-template>
+              <ng-template #noImageTemplate>
+                <div class="img-background">
+                  <div class="no-image">No Image</div>
+                </div>
               </ng-template>
               <mat-card-content>
                 <p>{{ project.description }}</p>
@@ -177,7 +182,6 @@
                     <mat-form-field>
                       <input matInput placeholder="+Y" [(ngModel)]="project.label_y_max" disabled>
                     </mat-form-field>
-
                   </mat-expansion-panel>
                 
                   <!-- <mat-expansion-panel [expanded]="toggle.target === project.id && (toggle.open === 'all' || toggle.open === 'attribute')" (click)="setToggle({target: project.id, open: 'attribute'})">
@@ -203,7 +207,7 @@
                 </div>
                 <div class="right-block">
                   <!-- <button mat-raised-button color="" class="color-edit" (click)="updateProject(project)">Update</button> -->
-                  <button mat-raised-button color="warn">Delete</button>    
+                  <!-- <button mat-raised-button color="warn">Delete</button>     -->
                 </div>
               </mat-card-actions>
             </mat-card>
@@ -216,41 +220,70 @@
           <mat-icon class="tab-icon">create_new_folder</mat-icon>
         </ng-template>
         <div class="card-list">
-          <mat-card>
-            <mat-card-title>New project</mat-card-title>
-            <mat-card-subtitle></mat-card-subtitle>
+          <mat-card class="project-card">
+            <mat-card-header>
+              <div mat-card-avatar class="project-header-image"></div>
+              <mat-card-title>New project</mat-card-title>
+            </mat-card-header>
+            <ng-template [ngIf]="newProject.image">
+              <div class="img-background">
+                <img class="card-img" [src]="newProject.image" alt=" Please check image url...">
+              </div>
+              <!-- <img mat-card-image [src]="project.image" alt="Photo of project"> -->
+            </ng-template>
             <mat-card-content>
               <div class="card-content">
-                <mat-form-field>
-                  <input matInput placeholder="project name" [(ngModel)]="newProject.name">
-                </mat-form-field>
-                <mat-form-field>
-                  <textarea matInput placeholder="project description" [(ngModel)]="newProject.description">{{ newProject.description }}</textarea>
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="image url (https://exapmle.com/sample.png)" [(ngModel)]="newProject.image">
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="-X" [(ngModel)]="newProject.label_x_min">
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="+X" [(ngModel)]="newProject.label_x_max">
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="-Y" [(ngModel)]="newProject.label_y_min">
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="+Y" [(ngModel)]="newProject.label_y_max">
-                </mat-form-field>
-                <mat-form-field *ngFor="let attribute of newProject.attributes">
+                <mat-accordion class="example-headers-align" [multi]="true">
+                  <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Project info
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-form-field>
+                      <input matInput placeholder="project name" [(ngModel)]="newProject.name">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <textarea matInput placeholder="project description" [(ngModel)]="newProject.description">{{ newProject.description }}</textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="image url (https://exapmle.com/sample.png)" [(ngModel)]="newProject.image">
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                  <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Label
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-form-field>
+                      <input matInput placeholder="-X" [(ngModel)]="newProject.label_x_min">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="+X" [(ngModel)]="newProject.label_x_max">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="-Y" [(ngModel)]="newProject.label_y_min">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="+Y" [(ngModel)]="newProject.label_y_max">
+                    </mat-form-field>
+                  </mat-expansion-panel>
+                </mat-accordion>
+                <!-- <mat-form-field *ngFor="let attribute of newProject.attributes">
                   <input matInput placeholder="name" [(ngModel)]="attribute.name">
-                </mat-form-field>
-                <button mat-raised-button color="warn" (click)="addProject()">Add</button> 
+                </mat-form-field> -->
               </div>
             </mat-card-content>
-            <img mat-card-image>
-            <mat-card-actions></mat-card-actions>
-            <mat-card-footer></mat-card-footer>
+            <mat-card-actions class="flex-block">
+              <div class="left-block">
+                <!-- <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button> -->
+              </div>
+              <div class="right-block">
+                <button mat-raised-button color="warn" (click)="addProject()">Add</button>
+              </div>
+            </mat-card-actions>
+            <!-- <mat-card-footer></mat-card-footer> -->
           </mat-card>
         </div>
       </mat-tab>

@@ -1,5 +1,5 @@
 import { Component, OnChanges, AfterViewChecked, OnInit } from '@angular/core';
-import { LoginService, IUserCredential } from './services/login.service';
+import { LoginService, IAuthCredential } from './services/login.service';
 import { Router } from '@angular/router';
 import { LoggerService } from './services/logger.service';
 import { MapService } from './services/map.service';
@@ -22,20 +22,28 @@ export class AppComponent implements OnInit {
   ) { }
 
   public isLogin: Boolean = false;
-  public isAnonymous: Boolean = false;
-  public userName: string;
+  public user: IAuthCredential = {
+    id: '',
+    name: '',
+    isAnonymous: false,
+    imageUrl: ''
+  };
+  // public isAnonymous: Boolean = false;
+  // public userName: string;
   public title = 'PosmApp';
 
   ngOnInit() {
-    this.loginService.userObservable.subscribe((user) => {
-      this.log.info(user, 'Login');
-      this.isLogin = Boolean(user);
+    this.loginService.loginSubject.subscribe((auth) => {
+      this.log.info(auth, 'Login');
+      this.isLogin = Boolean(auth.id);
       if(this.isLogin) {
-        this.isAnonymous = user.isAnonymous;
+        this.user.isAnonymous = auth.isAnonymous;
+        this.user.imageUrl = auth.imageUrl;
         this.router.navigateByUrl('/projects');
       } else {
         this.setUserName('');
-        this.isAnonymous = false;
+        this.user.isAnonymous = false;
+        this.user.imageUrl = '';
         this.router.navigateByUrl('/login');
       }
     });
@@ -49,7 +57,15 @@ export class AppComponent implements OnInit {
   }
 
   setUserName(userName) {
-    this.userName = userName
+    if (this.user) {
+      this.user.name = userName;
+    }
+  }
+
+  setImageUrl(imageUrl) {
+    if (this.user) {
+      this.user.imageUrl = imageUrl;
+    }
   }
 
   gotoHome() {

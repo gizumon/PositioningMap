@@ -1,5 +1,5 @@
-<div id="project-list">
-    <mat-tab-group [selectedIndex]="selectedTab">
+<div id="project-map">
+    <mat-tab-group mat-stretch-tabs [selectedIndex]="selectedTab">
         <mat-tab>
           <ng-template mat-tab-label>
             Map
@@ -7,14 +7,24 @@
           </ng-template>
           <div>
             <mat-card class="map-card">
-                <mat-card-header>
+                <!-- <mat-card-header>
                   <div mat-card-avatar class="map-header"></div>
-                    <mat-card-title>{{ project.name }}</mat-card-title>
-                    <mat-card-subtitle>{{ project.description }}</mat-card-subtitle>
-                </mat-card-header>
+                  <mat-card-title>{{ project.name }}</mat-card-title>
+                  <span>{{ project.name }}</span>
+                </mat-card-header> -->
                 <!-- <mat-card-content>
                 </mat-card-content> -->
                 <mat-card-actions class="flex-block">
+                  <div class="left-block">
+                    <img class="title-image" *ngIf="project.image" [src]="project.image">
+                    <span class="title-block">{{ project.name }}</span>
+                    <!-- <button mat-fab color="primary" [routerLink]="['/map', project.id]" >Show</button> -->
+                  </div>
+                  <div class="right-block">
+                    <button mat-raised-button color="warn" (click)="addProject()">Add</button>
+                    <!-- <button mat-raised-button color="" class="color-edit" (click)="updateProject(project)">Update</button> -->
+                    <!-- <button mat-raised-button color="warn">Delete</button> -->
+                  </div>
                 </mat-card-actions>
             </mat-card>
           </div>

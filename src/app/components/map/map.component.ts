@@ -113,8 +113,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   initialize() {
-    const project_id = this.route.snapshot.paramMap.get('id');
-    this.project = this.mapService.getProjectById(project_id);
+    const projectId = this.route.snapshot.paramMap.get('id');
+    console.log(projectId);
+    this.project = this.mapService.getProjectById(projectId);
   }
 
   checkWindowSize(val): number {

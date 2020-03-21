@@ -1,14 +1,11 @@
 #project-list {
+  .fixed {
+    position: fixed;
+    z-index: 1000;
+    top: 56px;
+  }
   .tab-icon {
     margin-left: 5px;
-  }
-  .mat-tab-label-container {
-    .mat-tab-labels {
-      // flex: 1 1 auto;
-      .mat-tab-lable {
-        min-width: 33%!important;
-      } 
-    }
   }
   .card-list {
     display: flex;
@@ -17,7 +14,7 @@
     width: 100%;
   }
   .project-card {
-    max-width: 350px;
+    max-width: 300px;
     // max-height: 500px;
     margin: 10px 30px;
     .mat-card-subtitle {
@@ -32,8 +29,13 @@
       background-color: rgba(192,192,192,0.5);
       .card-img {
         // width: unset;
-        max-height: 200px; 
+        max-height: 200px;
+        max-width: 300px;
         margin-bottom: -3px;
+      }
+      .no-image {
+        height: 50px;
+        content: "No Image";
       }
     }
   }
@@ -44,6 +46,7 @@
   }
   .card-content {
     width: 100%;
+    text-align: center;
   }
   .flex-block {
     display: flex;
@@ -66,6 +69,7 @@
 .mat-expansion-panel-header-title {
   width: 3rem;
 }
+
 // .m-5 {
 //   margin: 5px;
 // }

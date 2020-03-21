@@ -1,6 +1,15 @@
 .h4 {
   font-family: 'Londrina Shadow', cursive;
 }
+.spacer {
+  height: 56px;
+  width: 100%;
+}
+.fixed {
+  position: fixed;
+  z-index: 1000;
+  top: 0px;
+}
 
 .icon-sm {
   padding: 0 14px;
@@ -18,12 +27,14 @@
     margin: 10px;
   }
 }
-
+.header-image {
+  background-size: cover;
+}
 .icon-button-label {
   display: flex;
   flex-direction: column;
   button {
-    margin-bottom: -5px;
+    // margin-bottom: -5px;
   }
   span {
     padding: 0;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 
-import { LoginService, IUserCredential } from '../../services/login.service';
+import { LoginService, IAuthCredential } from '../../services/login.service';
 import { LoggerService } from '../../services/logger.service';
 
 @Component({

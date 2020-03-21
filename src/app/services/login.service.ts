@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from "@angular/fire/auth";
@@ -9,21 +9,24 @@ import { Template, IUser } from '../templates/template';
 import { LoggerService } from './logger.service';
 // import { GraphqlClientService } from '../services/graphql-client.service';
 
-export interface IUserCredential {
+export interface IAuthCredential {
   id: string,
   name: string,
-  isAnonymous: Boolean
+  isAnonymous: Boolean,
+  imageUrl: string
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  userObservable: Observable<firebase.User>;
-  user: IUserCredential = {
+  loginObservable: Observable<firebase.User>;
+  loginSubject:Subject<IAuthCredential> = new Subject();
+  auth: IAuthCredential = {
       id: '',
       name: '',
-      isAnonymous: true
+      isAnonymous: true,
+      imageUrl: ''
   };
 
   constructor(
@@ -35,39 +38,42 @@ export class LoginService {
   }
 
   initialize() {
-    this.userObservable = this.afAuth.authState;
-    this.userObservable.subscribe(u => {
+    this.loginObservable = this.afAuth.authState;
+    this.loginObservable.subscribe(u => {
       this.log.info(u, 'UserStatus');
       if (u) {
         this.setUser(u);
       } else {
         this.clearUser();
       }
+      this.loginSubject.next(this.auth);
     });
   }
 
-  getUser(): IUserCredential {
-    return this.user;
+  getAuth(): IAuthCredential {
+    return this.auth;
   }
 
   setUser(data: firebase.User) {
-    this.user = {
+    this.auth = {
       id: data.uid,
       name: data.displayName,
-      isAnonymous: data.isAnonymous
+      isAnonymous: data.isAnonymous,
+      imageUrl: data.photoURL
     }
   }
 
   clearUser() {
-    this.user = {
+    this.auth = {
       id: '',
       name: '',
-      isAnonymous: true
+      isAnonymous: true,
+      imageUrl: ''
     }
   }
 
   isAnonymous(): Boolean {
-    return this.user.isAnonymous;
+    return this.auth.isAnonymous;
   }
 
   createUser(email, password): void {
@@ -96,7 +102,7 @@ export class LoginService {
   async logout() {
     this.afAuth.auth.signOut().then(() => {
       this.router.navigate(['/login']);
-      this.log.info(this.user, 'Logout');
+      this.log.info(this.auth, 'Logout');
     }).catch(e => {
       this.log.error(e, 'Logout');
     });

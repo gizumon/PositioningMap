@@ -1,31 +1,37 @@
-
-<mat-toolbar color="primary">
+<div class="spacer"></div>
+<mat-toolbar color="primary" class="fixed">
   <mat-toolbar-row>
     <span class="h4" (click)="gotoHome()">PosmApp</span>
     <span class="spacer-right"></span>
-    <ng-template [ngIf]="isAnonymous">
+    <ng-template [ngIf]="user?.isAnonymous">
         <div class="row">
             <p>Guest</p>
-        </div>      
+        </div>  
     </ng-template>
-    <ng-template [ngIf]="!isLogin && isAnonymous">
+    <ng-template [ngIf]="!isLogin && user?.isAnonymous">
         <div class="row">
             <p>Please login...</p>
         </div>      
     </ng-template>
-    <ng-template [ngIf]="isLogin && !isAnonymous">
+    <ng-template [ngIf]="isLogin && !user?.isAnonymous">
       <div class="row">
-        <p>{{ userName }}</p>
+        <p>{{ user.name }}</p>
       </div>
     </ng-template>
     <div class="icon-button-label">
       <button (click)="logout()" mat-icon-button aria-label="Example icon-button with a heart icon">
-        <mat-icon color="link" aria-hidden="false" aria-label="" title="Logout">person</mat-icon>
+        <div *ngIf="user.imageUrl; then imageTemplate; else iconTemplate"></div>
+        <ng-template #imageTemplate>
+          <div mat-card-avatar class="header-image" [ngStyle]="{'background-image': 'url(' + user.imageUrl + ')'}"></div>                  
+        </ng-template>
+        <ng-template #iconTemplate>
+          <mat-icon color="link" aria-hidden="false" aria-label="" title="Logout">person</mat-icon>
+        </ng-template>
       </button>
       <ng-template [ngIf]="!isLogin">
         <span>LOGIN</span>
       </ng-template>
-      <ng-template [ngIf]="isLogin || isAnonymous">
+      <ng-template [ngIf]="isLogin">
         <span>LOGOUT</span>
       </ng-template>
     </div>

@@ -57,7 +57,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.initialize();
     this.container.tabSubject.subscribe((tab: IFooterCmd) => {
       this.selectedTab = this.tabConfig[tab] || 0;
-    })
+    });
   }
 
   ngOnDestroy() { }

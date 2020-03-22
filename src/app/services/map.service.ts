@@ -51,6 +51,7 @@ export class MapService {
 
   private setUser(authId) {
     this.graphql.getUser(authId).subscribe(result => {
+      console.log('update user', result);
       this.user = result.data['Users'][0];
       this.userSubject.next(this.user);
     });
@@ -58,6 +59,7 @@ export class MapService {
 
   private setAttributes() {
     this.graphql.getAttributes().subscribe(result => {
+      console.log('update attributes', result);
       this.attributes = result.data['Attributes'];
       this.attributesSubject.next(this.attributes);
     });
@@ -65,6 +67,7 @@ export class MapService {
 
   private setProjects(user_id) {
     this.graphql.getProjects(user_id).subscribe(result => {
+      console.log('update projects', result);
       this.projects = result.data['Projects'];
       this.projectsSubject.next(this.projects);
       this.isInitialized = true;
@@ -73,6 +76,7 @@ export class MapService {
 
   private setSharedProjects(user_id) {
     this.graphql.getSharedProjects(user_id).subscribe(result => {
+      console.log('update setSharedProjects', result);
       this.sharedProjects = result.data['SharedProjects'];
       this.sharedProjectsSubject.next(this.sharedProjects);
     });
@@ -93,13 +97,13 @@ export class MapService {
 
   public getProjectById(id: string): IProject {
     return this.projects.filter((project) => {
-      return project.id = id;
+      return project.id === id;
     })[0];
   }
 
   public getSharedProjectById(id: string): ISharedProject {
     return this.sharedProjects.filter((shared) => {
-      return shared.id = id;
+      return shared.id === id;
     })[0];
   }
 

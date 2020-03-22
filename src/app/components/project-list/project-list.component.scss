@@ -35,7 +35,12 @@
       }
       .no-image {
         height: 50px;
+        line-height: 50px;
         content: "No Image";
+        color: darkgray;
+        font-weight: bold;
+        font-family: fantasy;
+        letter-spacing: 2px;
       }
     }
   }

@@ -1,11 +1,13 @@
 #project-map {
     .map-card {
-        margin: 15px;
+        margin: 25px 15px;
         max-height: 80px;
         .title-image {
             max-width: 64px;
             max-height: 36px;
-            margin-right: 5px;
+            margin-right: 8px;
+            // filter: drop-shadow(10px 10px 10px rgba(0,0,0,0.6));
+            box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
         }
         .title-block {
             font-weight: 600;
@@ -14,11 +16,14 @@
         .flex-block {
             display: flex;
             margin-top: -8px;
+            padding-top: 0px;
             .left-block {
+                display: flex;
                 margin-top: auto;
                 margin-bottom: auto;
             }
             .right-block {
+                display: flex;
                 margin-left: auto;
                 margin-top: auto;
                 margin-bottom: auto;
@@ -29,6 +34,9 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        canvas {
+            box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+        }
     }
     #plotDetail {
         position: absolute;
@@ -44,6 +52,22 @@
         }
         .mat-card-content {
             font-size: 9px;
+            table {
+                width: 100%;
+                margin: auto;
+                td {
+                    .mat-slider {
+                        width: 100%;
+                        margin: -15px;
+                    }
+                    &:first-child {
+                        width: 10%;
+                    }
+                    &:last-child {
+                        width: 90%;
+                    }    
+                }
+            }
         }
     }
 }

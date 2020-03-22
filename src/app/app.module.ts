@@ -123,6 +123,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     // LoginService,
     ServiceWorkerService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalComponent]
 })
 export class AppModule { }

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import _ from 'lodash';
 import { Observable, Subject } from 'rxjs';
 
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 // import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
 
-import { IUser, IProject, IAttribute, ISharedProject, IApp } from '../templates/template';
+import { IUser, IProject, IAttribute, ISharedProject, IApp, IPlot } from '../templates/template';
 import { LoggerService } from './logger.service';
 import { ApolloQueryResult } from 'apollo-client';
 
@@ -14,10 +14,10 @@ import { ApolloQueryResult } from 'apollo-client';
   providedIn: 'root'
 })
 export class GraphqlClientService {
-  public userObservable: Observable<ApolloQueryResult<IUser>>;
-  public projectsObservable: Observable<ApolloQueryResult<IProject[]>>;
-  public attributesObservable: Observable<ApolloQueryResult<IAttribute[]>>;
-  public sharedProjectsObservable: Observable<ApolloQueryResult<ISharedProject[]>>;
+  public userQuery: QueryRef<IUser>;
+  public projectsQuery: QueryRef<IProject[]>;
+  public attributesQuery: QueryRef<IAttribute[]>;
+  public sharedProjectsQuery: QueryRef<ISharedProject[]>;
 
   constructor(
     private apollo: Apollo,
@@ -29,8 +29,8 @@ export class GraphqlClientService {
    * @param auth_id 
    * @returns Observable<ApolloQueryResult<IUser>>
    */
-  public getUser(auth_id) {
-    return this.userObservable = this.apollo.watchQuery<IUser>({
+  public getUser(auth_id): Observable<ApolloQueryResult<IUser>> {
+    this.userQuery = this.apollo.watchQuery<IUser>({
       query: gql`
         query getUser($auth_id: String!) {
           Users(where: {auth_id: {_eq: $auth_id}}) {
@@ -42,11 +42,12 @@ export class GraphqlClientService {
       variables: {
         auth_id: auth_id
       }
-    }).valueChanges;
+    });
+    return this.userQuery.valueChanges;
   }
 
-  public getProjects(user_id) {
-    return this.projectsObservable = this.apollo.watchQuery<IProject[]>({
+  public getProjects(user_id): Observable<ApolloQueryResult<IProject[]>> {
+    this.projectsQuery = this.apollo.watchQuery<IProject[]>({
       query: gql`
         query getProjects($created_user_id: uuid!) {
           Projects(where: {created_user_id: {_eq: $created_user_id}}) {
@@ -77,11 +78,12 @@ export class GraphqlClientService {
       variables: {
         created_user_id: user_id
       }
-    }).valueChanges;
+    })
+    return this.projectsQuery.valueChanges;
   }
 
-  public getSharedProjects(user_id) {
-    return this.sharedProjectsObservable = this.apollo.watchQuery<ISharedProject[]>({
+  public getSharedProjects(user_id): Observable<ApolloQueryResult<ISharedProject[]>> {
+    this.sharedProjectsQuery = this.apollo.watchQuery<ISharedProject[]>({
       query: gql`
         query getSharedProjects($user_id: uuid!) {
           SharedProjects(where: {user_id: {_eq: $user_id}}) {
@@ -121,11 +123,12 @@ export class GraphqlClientService {
       variables: {
         user_id: user_id
       }
-    }).valueChanges;
+    })
+    return this.sharedProjectsQuery.valueChanges;
   }
 
-  public getAttributes() {
-    return this.attributesObservable = this.apollo.watchQuery<IAttribute[]>({
+  public getAttributes(): Observable<ApolloQueryResult<IAttribute[]>> {
+    this.attributesQuery = this.apollo.watchQuery<IAttribute[]>({
       query: gql`
         query getAttributes {
           Attributes {
@@ -134,11 +137,12 @@ export class GraphqlClientService {
             arguments
           }
       }`
-    }).valueChanges;
+    })
+    return this.attributesQuery.valueChanges;
   }
 
   public addUser(user: IUser) {
-    return this.apollo.mutate({
+    const result = this.apollo.mutate({
       mutation: gql`
         mutation insert_User($auth_id: String!, $name: String!) {
           insert_Users(objects: {auth_id: $auth_id, name: $name}) {
@@ -154,10 +158,12 @@ export class GraphqlClientService {
         name: user.name
       }
     });
+    this.userQuery.refetch();
+    return result;
   }
 
   public upadateUser(user: IUser) {
-    return this.apollo.mutate({
+    const result = this.apollo.mutate({
       mutation: gql`
         mutation update_User($id: uuid!, $name: String!) {
           update_Users(where: {id: {_eq: $id}}, _set: {name: $name})
@@ -172,10 +178,12 @@ export class GraphqlClientService {
         name: user.name
       }
     });
+    this.userQuery.refetch();
+    return result;
   }
 
   public addProject(project: IProject) {
-    return this.apollo.mutate({
+    const result = this.apollo.mutate({
       mutation: gql`
         mutation insert_Projects(
           $name: String!, $description: String, $image: String, $created_user_id: uuid!,
@@ -204,9 +212,13 @@ export class GraphqlClientService {
         created_user_id: project.created_user_id
       }
     });
+    this.projectsQuery.refetch();
+    console.log('projects refetched...');
+    return result;
   }
+
   public updateProject(project: IProject) {
-    return this.apollo.mutate({
+    const result = this.apollo.mutate({
       mutation: gql`
         mutation update_Projects(
           $id: uuid!, $name: String!, $description: String, $image: String, $created_user_id: uuid!,
@@ -237,6 +249,41 @@ export class GraphqlClientService {
         created_user_id: project.created_user_id
       }
     });
+    this.projectsQuery.refetch();
+    console.log('projects refetched...');
+    return result;
+  }
+
+  public addPlot(plot: IPlot) {
+    const result = this.apollo.mutate({
+      mutation: gql`
+        mutation insert_Plots(
+          $name: String!, $project_id: uuid!, $created_user_id: uuid!, $x: Int!, $y: Int!,
+        ) {
+          insert_Plots(
+            objects: {
+              name: $name, project_id: $project_id, created_user_id: $created_user_id, x: $x, y: $y,
+            }) {
+            returning {
+              id
+              created_user_id
+              name
+              x
+              y
+            }
+          }
+        }`,
+      variables: {
+        name: plot.name,
+        x: plot.x,
+        y: plot.y,
+        project_id: plot.project_id,
+        created_user_id: plot.created_user_id
+      }
+    });
+    this.projectsQuery.refetch();
+    console.log('projects refetched...');
+    return result;
   }
   // public updateUser(data: IUser): boolean {
   //   if (!(data && _.isString(data.id) && _.isString(data.name) && _.isString(data.auth_id))) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import _ from 'lodash';
-import { IProject, IUser } from '../templates/template';
+import { IProject, IUser, IPlot } from '../templates/template';
 import { MapService } from './map.service';
 
 export type IValidType = 'ADD' | 'UPDATE'; 
@@ -47,6 +47,30 @@ export class ValidationService {
     ) {
       isValid = true;
     }
+    return {data: data, isValid: isValid};
+  }
+
+  public validPlot(obj: IPlot, type: IValidType): {data: IPlot, isValid: boolean} {
+    let isValid = false;
+    let data: IPlot = {
+      name: obj.name,
+      x: obj.x,
+      y: obj.y,
+      project_id: obj.project_id,
+      created_user_id: this.user.id
+    }
+    if (type === 'UPDATE') { data.id = obj.id; }
+    if (
+      (type === 'ADD' || _.isString(data.id)) &&
+      !_.isEmpty(data.name) && _.isString(data.name) &&
+      // !_.isEmpty(data.x) && _.isNumber(data.x) &&
+      // !_.isEmpty(data.y) && _.isNumber(data.y) &&
+      !_.isEmpty(data.project_id) && _.isString(data.project_id) &&
+      !_.isEmpty(data.created_user_id) && _.isString(data.created_user_id)
+    ) {
+      isValid = true;
+    }
+    console.log('validation result',isValid, data);
     return {data: data, isValid: isValid};
   }
 }

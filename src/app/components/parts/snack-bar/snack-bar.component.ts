@@ -8,6 +8,9 @@ import { ModalService, ISnackBarConfig } from '../../../services/modal.service';
   styleUrls: ['./snack-bar.component.scss']
 })
 export class SnackBarComponent {
+  private defaultConfig: MatSnackBarConfig = {
+    duration: 5000
+  }
 
   constructor(
     public snackBar: MatSnackBar,
@@ -15,10 +18,6 @@ export class SnackBarComponent {
   ) {
     this.initialize();
   }
-  
-  private defaultConfig: MatSnackBarConfig = {
-    duration: 5000
-  } 
 
   private initialize() {
     this.modalService.snackBarSubject.subscribe((params) => {

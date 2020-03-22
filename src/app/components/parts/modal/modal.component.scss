@@ -1,0 +1,18 @@
+#modal {
+    .slider-group {
+        width: 100%;
+        margin: auto;
+        td {
+            .mat-slider {
+                width: 100%;
+                // margin: -15px;
+            }
+            &:first-child {
+                width: 10%;
+            }
+            &:last-child {  
+                width: 90%;
+            }    
+        }
+    }
+}

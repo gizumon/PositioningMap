@@ -1,5 +1,28 @@
-<ol>
-    <li *ngIf="animal">
-        You chose: <i>{{animal}}</i>
-    </li>
-</ol>
+<!-- <div id="modal" [ngSwitch]="params.type">
+  <ng-template *ngSwitchCase="'plot'"> -->
+<div id="modal">
+  <!-- <ng-template> -->
+    <h1 mat-dialog-title>Add plot</h1>
+    <div mat-dialog-content>
+      <p>Please fill out the plot deitails</p>
+      <mat-form-field>
+          <mat-label>Plot name</mat-label>
+          <input matInput [(ngModel)]="params.data.name">
+      </mat-form-field>
+      <table class="slider-group">
+        <tr>
+          <td><span>X</span></td>
+          <td><mat-slider thumbLabel min="-100" max="100" step="1" [(ngModel)]="params.data.x"></mat-slider></td>
+        </tr>
+        <tr>
+          <td><span>Y</span></td>
+          <td><mat-slider thumbLabel min="-100" max="100" step="1" [(ngModel)]="params.data.y"></mat-slider></td>
+        </tr>
+      </table>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-button (click)="onCancel()">No Thanks</button>
+      <button mat-button [mat-dialog-close]="{type: params.type, data: params.data}" cdkFocusInitial>Ok</button>
+    </div>
+  <!-- </ng-template> -->
+</div>

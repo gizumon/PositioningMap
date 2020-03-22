@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IProject } from 'src/app/templates/template';
+import { IProject, IPlot } from 'src/app/templates/template';
 import { MapService } from 'src/app/services/map.service';
 import { LoginService } from 'src/app/services/login.service';
+import { ContainerService } from 'src/app/services/container.service';
+import { ModalService, IModalConfig, IOnOk } from 'src/app/services/modal.service';
+import { GraphqlClientService } from 'src/app/services/graphql-client.service';
+import { ValidationService } from 'src/app/services/validation.service';
 
 import * as PIXI from "pixi.js";
-import { ContainerService } from 'src/app/services/container.service';
 
 @Component({
   selector: 'app-map',
@@ -18,15 +21,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   mapContainer: PIXI.Container;
   axisContainer: PIXI.Container;
   labelContainer: PIXI.Container;
-  project: IProject;
+  public project: IProject;
   // plots: PIXI.Container[] = [];
-  plot =  {
+  public selectedPlot =  {
     id: '',
     name: '',
     x: 0,
     y: 0
   };
-
+  
   private config = {
     size: {
       ratio: 0.75,
@@ -93,7 +96,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     private route : ActivatedRoute,
     private mapService: MapService,
     private loginService: LoginService,
-    private containerService: ContainerService
+    private containerService: ContainerService,
+    private modalService: ModalService,
+    private graphql: GraphqlClientService,
+    private valid: ValidationService
   ) {
     this.config.pixi.width = this.checkWindowSize(window.innerWidth);
     this.config.pixi.height = this.checkWindowSize(window.innerWidth);
@@ -114,8 +120,22 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   initialize() {
     const projectId = this.route.snapshot.paramMap.get('id');
-    console.log(projectId);
     this.project = this.mapService.getProjectById(projectId);
+    // detection for adding plots
+    this.modalService.onOkSubject.subscribe((params: IOnOk) => {
+      console.log(params);
+      if (params && params.type === 'plot' && params.data) { this.addPlot(params.data); }
+    });
+    // detection for change projects
+    this.mapService.projectsSubject.subscribe((projects) => {
+      projects.forEach(project => {
+        if (project.id === this.project.id) {
+          console.log('detect update', project);
+          this.project = project;
+          this.drawPlots();
+        }
+      });
+    })
   }
 
   checkWindowSize(val): number {
@@ -225,6 +245,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   drawPlots() {
+    this.mapContainer.removeChildren();
     let plots = this.project.plots;
     plots.forEach(plot => {
       let p = new PIXI.Graphics();
@@ -255,18 +276,58 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  showPlots(e: PIXI.interaction.InteractionEvent) {
-    if (this.plot.id === e.currentTarget.name) {
+  public showPlots(e: PIXI.interaction.InteractionEvent) {
+    if (this.selectedPlot.id === e.currentTarget.name) {
       this.clearPlot();
     } else {
-      this.plot.x = e.currentTarget.x;
-      this.plot.y = e.currentTarget.y;
-      this.plot.id = e.currentTarget.name;
-      console.log(this.plot);
-      this.plot.name = this.project.plots.filter((plot) => {
-        return plot.id === this.plot.id;
+      this.selectedPlot.x = e.currentTarget.x;
+      this.selectedPlot.y = e.currentTarget.y;
+      this.selectedPlot.id = e.currentTarget.name;
+      console.log(this.selectedPlot);
+      this.selectedPlot.name = this.project.plots.filter((plot) => {
+        return plot.id === this.selectedPlot.id;
       })[0].name;
     }
+  }
+
+  public openNewPlot() {
+    const newPlot: IPlot = {
+      name: 'new plot',
+      x: 0,
+      y: 0,
+      // z: 0,
+      project_id: this.project.id,
+      created_user_id: this.mapService.getUser().id
+    };
+    this.modalService.openModal({
+      type: 'plot',
+      data: newPlot,
+      isOpen: true,
+    });
+  }
+
+  private addPlot(plot: IPlot) {
+    const {data , isValid} = this.valid.validPlot(plot, 'ADD');
+    if(!isValid) {
+      this.modalService.openSnackBar({
+        message: `Please fill all inputs: ${plot.name}`,
+        action: 'OK'
+      });
+      return;
+    }
+    this.graphql.addPlot(data).subscribe((res) => {
+      console.log('Got data', res);
+      this.modalService.openSnackBar({
+        message: `Success add plot: ${data.name}`,
+        action: 'OK'
+      });
+    },(error) => {
+      console.log('There was an error sending the query', error);
+      this.modalService.openSnackBar({
+        message: `Failed add plot: ${data.name}`,
+        action: 'OK'
+      });
+    });
   }
 
   updatePlot(e) {
@@ -274,7 +335,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   clearPlot() {
-    this.plot =  {
+    this.selectedPlot =  {
       id: '',
       name: '',
       x: 0,
@@ -306,5 +367,17 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.x = Math.round(newPosition.x);
       this.y = Math.round(newPosition.y);
     }
+  }
+
+  public onChangeSelectedPlot = function() {
+    console.log(`onChange selectedPlot`);
+    this.project.plots.forEach((plot, index) => {
+      if (plot.id === this.selectedPlot.id) {
+        plot.name = this.selectedPlot.name;
+        plot.x = this.selectedPlot.x;
+        plot.y = this.selectedPlot.y;
+      }
+    });
+    this.drawPlots();
   }
 }

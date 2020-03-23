@@ -1,5 +1,5 @@
 #project-map {
-    .map-card {
+    .title-card {
         margin: 25px 15px;
         max-height: 80px;
         .title-image {
@@ -29,6 +29,12 @@
                 margin-bottom: auto;
             }
         }
+    }
+    .map-card {
+        height: 350px;
+        width: 350px;
+        padding: 5px;
+        margin: auto;
     }
     #pixiContainer {
         display: flex;

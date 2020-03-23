@@ -18,6 +18,10 @@ export class GraphqlClientService {
   public projectsQuery: QueryRef<IProject[]>;
   public attributesQuery: QueryRef<IAttribute[]>;
   public sharedProjectsQuery: QueryRef<ISharedProject[]>;
+  public userUpdatedSubject: Subject<QueryRef<IUser>> =  new Subject();
+  public projectsUpdatedSubject: Subject<QueryRef<IProject[]>> =  new Subject();
+  public attributesUpdatedSubject: Subject<QueryRef<IAttribute[]>> =  new Subject();
+  public sharedProjectsUpdatedSubject: Subject<QueryRef<ISharedProject[]>> =  new Subject();
 
   constructor(
     private apollo: Apollo,
@@ -281,9 +285,21 @@ export class GraphqlClientService {
         created_user_id: plot.created_user_id
       }
     });
-    this.projectsQuery.refetch();
+    this.projectsQuery.refetch().then((data) => console.log('sucess', data)).catch((e) => console.log('fail', e));
+    // this.projectsUpdatedSubject.next(.bind(this));
     console.log('projects refetched...');
     return result;
+  }
+
+  private refetch(query: QueryRef<any>, subject: Subject<any>) {
+    const interval = 1000;
+    const timer = setInterval(() => {
+      query.refetch();
+    }, interval);
+    subject.subscribe((data) => {
+      clearInterval(timer);
+      subject.unsubscribe();
+    });
   }
   // public updateUser(data: IUser): boolean {
   //   if (!(data && _.isString(data.id) && _.isString(data.name) && _.isString(data.auth_id))) {

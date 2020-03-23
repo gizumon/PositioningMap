@@ -17,12 +17,14 @@ import * as PIXI from "pixi.js";
 })
 export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('pixiContainer', {static: false}) canvasArea: ElementRef<HTMLElement>;
-  pixiApp: PIXI.Application;
-  mapContainer: PIXI.Container;
-  axisContainer: PIXI.Container;
-  labelContainer: PIXI.Container;
+  private pixiApp: PIXI.Application;
+  private mapContainer: PIXI.Container;
+  private axisContainer: PIXI.Container;
+  private labelContainer: PIXI.Container;
+  private plotsContainerMap: Map<string, PIXI.Container> = new Map();
+  // TODO: MapService で持たせる
+  private plotsIndex: Map<string, number> = new Map(); // this.projects.plots[this.plotsIndex[id]];
   public project: IProject;
-  // plots: PIXI.Container[] = [];
   public selectedPlot =  {
     id: '',
     name: '',
@@ -50,24 +52,23 @@ export class MapComponent implements OnInit, AfterViewInit {
         y: 50
       },
       text: {
-        fontFamily: "\"Arial Black\", Gadget, sans-serif",
-        fontSize: 20,
-        fontStyle: 'normal',
-        fontWeight: '600',
-        fill: ['#4286f4', '#373B44'], // gradient
-        stroke: '#FFF',
-        strokeThickness: 1,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowBlur: 10,
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 7,
-        wordWrap: true,
-        wordWrapWidth: 100,
-        align: "center",
-        breakWords: true,
-        fontVariant: "small-caps",
-        letterSpacing: -1,
+        "align": "center",
+        "breakWords": true,
+        "dropShadow": true,
+        "dropShadowAlpha": 0.3,
+        "dropShadowAngle": 0.5,
+        "dropShadowBlur": 3,
+        "fill": "#004080",
+        "fontFamily": "Tahoma, Geneva, sans-serif",
+        "fontSize": 20,
+        "fontWeight": 700,
+        "letterSpacing": -1,
+        "lineJoin": "round",
+        "miterLimit": 1,
+        "stroke": "#000040",
+        "strokeThickness": 1,
+        "wordWrap": true,
+        "wordWrapWidth": 150
       },
       circle: {
         radius: 4,
@@ -121,6 +122,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   initialize() {
     const projectId = this.route.snapshot.paramMap.get('id');
     this.project = this.mapService.getProjectById(projectId);
+    this.setPlotsIndex();
     // detection for adding plots
     this.modalService.onOkSubject.subscribe((params: IOnOk) => {
       console.log(params);
@@ -133,9 +135,17 @@ export class MapComponent implements OnInit, AfterViewInit {
           console.log('detect update', project);
           this.project = project;
           this.drawPlots();
+          this.setPlotsIndex();
         }
       });
     })
+  }
+
+  setPlotsIndex() {
+    console.log('set', this.project.plots)
+    this.project.plots.forEach((plot, index) => {
+      this.plotsIndex.set(plot.id, index);
+    });
   }
 
   checkWindowSize(val): number {
@@ -254,6 +264,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       p.buttonMode = true;
       p.beginFill(this.config.draw.circle.color, 1);
       p.drawCircle(0, 0, this.config.draw.circle.radius);
+      p.hitArea = new PIXI.Circle(0, 0, this.config.draw.circle.radius + 5);
       p.endFill();
       p.on('pointerdown', this.onDragStart)
        .on('pointerdown', this.showPlots.bind(this))
@@ -264,15 +275,13 @@ export class MapComponent implements OnInit, AfterViewInit {
        .on('pointerupoutside', this.updatePlot.bind(this));
       p.position.set(plot.x, plot.y);
       
-      // let name = this.project.plots.filter((plot) => {
-      //   return p.name === plot.id;
-      // })[0].name;
+      // let name = plot.name;
       // let text = new PIXI.Text(name, this.config.draw.label);
       // text.anchor.set(0.5, 1);
-      // text.position.set(plot.coordinate.x, plot.coordinate.y);
+      // text.position.set(plot.x, plot.y);
 
       this.mapContainer.addChild(p);
-      // this.plots.push(p);
+      this.plotsContainerMap.set(plot.id, p);
     });
   }
 
@@ -283,10 +292,10 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.selectedPlot.x = e.currentTarget.x;
       this.selectedPlot.y = e.currentTarget.y;
       this.selectedPlot.id = e.currentTarget.name;
-      console.log(this.selectedPlot);
-      this.selectedPlot.name = this.project.plots.filter((plot) => {
-        return plot.id === this.selectedPlot.id;
-      })[0].name;
+      console.log('selected', this.project.plots[this.plotsIndex.get(this.selectedPlot.id)]);
+      this.selectedPlot.name = this.project.plots[this.plotsIndex.get(this.selectedPlot.id)].name;
+      console.log('selected', this.selectedPlot);
+      // console.log('selected', this.project.plots[this.plotsIndex.get(this.selectedPlot.id)]);
     }
   }
 
@@ -371,13 +380,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   public onChangeSelectedPlot = function() {
     console.log(`onChange selectedPlot`);
-    this.project.plots.forEach((plot, index) => {
-      if (plot.id === this.selectedPlot.id) {
-        plot.name = this.selectedPlot.name;
-        plot.x = this.selectedPlot.x;
-        plot.y = this.selectedPlot.y;
-      }
-    });
+    const id = this.selectedPlot.id;
+    this.project.plots[this.plotsIndex.get(id)].name = this.selectedPlot.name;
+    this.project.plots[this.plotsIndex.get(id)].x = this.selectedPlot.x;
+    this.project.plots[this.plotsIndex.get(id)].y = this.selectedPlot.y;
     this.drawPlots();
   }
 }

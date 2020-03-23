@@ -6,7 +6,7 @@
             <mat-icon class="tab-icon">map</mat-icon>
           </ng-template>
           <div>
-            <mat-card class="map-card">
+            <mat-card class="title-card">
                 <mat-card-actions class="flex-block">
                   <div class="left-block">
                     <img class="title-image" *ngIf="project && project.image" [src]="project.image">
@@ -20,33 +20,37 @@
                 </mat-card-actions>
             </mat-card>
           </div>
-          <div id="pixiContainer" #pixiContainer>
-            <ng-template [ngIf]="selectedPlot.id">
-              <mat-card id="plotDetail">
-                <mat-card-header>
-                  <mat-card-title>
-                    <mat-form-field>
-                      <mat-label>Plot name</mat-label>
-                      <input matInput [(ngModel)]="selectedPlot.name" (change)="onChangeSelectedPlot()">
-                    </mat-form-field>
-                  </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <table>
-                    <tr>
-                      <td>X</td>
-                      <!-- <td>{{ plot?.x }}</td> -->
-                      <td><mat-slider thumbLabel tickInterval="1" min="-100" max="100" step="1" [(ngModel)]="selectedPlot.x" (change)="onChangeSelectedPlot()"></mat-slider></td>
-                    </tr>
-                    <tr>
-                      <td>Y</td>
-                      <td><mat-slider thumbLabel tickInterval="1" min="-100" max="100" step="1" [(ngModel)]="selectedPlot.y" (change)="onChangeSelectedPlot()"></mat-slider></td>
-                    </tr>
-                  </table>
-                </mat-card-content>
-              </mat-card>
-            </ng-template>
-          </div>
+          <mat-card class="map-card">
+            <mat-card-content>
+              <div id="pixiContainer" #pixiContainer>
+                <ng-template [ngIf]="selectedPlot.id">
+                  <mat-card id="plotDetail">
+                    <mat-card-header>
+                      <mat-card-title>
+                        <mat-form-field>
+                          <mat-label>Plot name</mat-label>
+                          <input matInput [(ngModel)]="selectedPlot.name" (change)="onChangeSelectedPlot()">
+                        </mat-form-field>
+                      </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <table>
+                        <tr>
+                          <td>X</td>
+                          <!-- <td>{{ plot?.x }}</td> -->
+                          <td><mat-slider thumbLabel tickInterval="1" min="-100" max="100" step="1" [(ngModel)]="selectedPlot.x" (change)="onChangeSelectedPlot()"></mat-slider></td>
+                        </tr>
+                        <tr>
+                          <td>Y</td>
+                          <td><mat-slider thumbLabel tickInterval="1" min="-100" max="100" step="1" [(ngModel)]="selectedPlot.y" (change)="onChangeSelectedPlot()"></mat-slider></td>
+                        </tr>
+                      </table>
+                    </mat-card-content>
+                  </mat-card>
+                </ng-template>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </mat-tab>
         <mat-tab>
           <ng-template mat-tab-label>

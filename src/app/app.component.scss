@@ -1,5 +1,6 @@
 .h4 {
-  font-family: 'Londrina Shadow', cursive;
+  font-family: monospace;
+  font-weight: bold;
 }
 .spacer {
   height: 56px;
@@ -22,7 +23,8 @@
 .row {
   display: flex;
   font-size: 0.8rem;
-  font-family: 'Londrina Shadow', cursive;
+  font-family: monospace;
+  font-weight: bold;
   p {
     margin: 10px;
   }
